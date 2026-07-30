@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="id" class="dark h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGE YT#3 Bikin Musik - Studio Pembuat Musik & Lirik AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        charcoal: {
+                            950: '#07090e',
+                            900: '#0e121b',
+                            850: '#131824',
+                            800: '#1a2232',
+                            700: '#252f45',
+                            600: '#34425e',
+                        },
+                        violet: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bar-wave': 'wave 1.2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        wave: {
+                            '0%': { height: '15%' },
+                            '100%': { height: '100%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #07090e;
+            color: #f1f5f9;
+        }
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+        .animate-bar-wave {
+            animation: wave 0.8s ease-in-out infinite alternate;
+        }
+        .animate-bar-wave:nth-child(2n) { animation-delay: 0.15s; }
+        .animate-bar-wave:nth-child(3n) { animation-delay: 0.3s; }
+        .animate-bar-wave:nth-child(4n) { animation-delay: 0.45s; }
+        .animate-bar-wave:nth-child(5n) { animation-delay: 0.6s; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0e121b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252f45;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #34425e;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col bg-charcoal-950 text-slate-100 antialiased selection:bg-violet-600 selection:text-white">
+
+    <header class="border-b border-charcoal-800/80 bg-charcoal-950/90 backdrop-blur-xl sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-700 via-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-600/20 border border-violet-500/30">
+                    <i class="fa-solid fa-compact-disc text-white text-2xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold font-heading bg-gradient-to-r from-white via-slate-100 to-violet-200 bg-clip-text text-transparent tracking-tight">
+                        AGE YT#3 Bikin Musik
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Tools pembuatan Lirik Dan Lagu Baru berbasis AI</p>
+                </div>
+            </div>
+
+            <!-- Right Status Badges & Controls -->
+            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2.5 sm:gap-3 text-xs">
+                <!-- OpenRouter Status Badge -->
+                <div id="openrouterBadge" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-charcoal-900 border border-charcoal-800 font-medium text-slate-400 shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-slate-500" id="openrouterDot"></span>
+                    <span id="openrouterText">Lirik: Key Belum Diset</span>
+                </div>
+
+                <!-- Active Music Provider Badge -->
+                <div id="apiStatusBadge" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-charcoal-900 border border-charcoal-800 font-medium text-slate-400 shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
+                    <span id="statusText">Musik: Key Belum Diset</span>
+                </div>
+
+                <!-- Credit Balance Badge -->
+                <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-950/40 border border-violet-800/40 font-medium text-violet-300 shadow-sm">
+                    <i class="fa-solid fa-coins text-amber-400"></i>
+                    <span>Koin Provider Musik:</span>
+                    <span id="creditBalance" class="font-bold text-amber-400 font-mono text-xs">-</span>
+                    <button type="button" onclick="refreshCreditsManual()" class="ml-1 text-slate-400 hover:text-amber-400 transition-colors" title="Perbarui Sisa Koin">
+                        <i id="refreshCoinIcon" class="fa-solid fa-rotate-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- API Modal Settings Button -->
+                <button id="openApiModalBtn" onclick="toggleModal('apiModal', true)" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-slate-200 font-medium transition-all duration-200 border border-charcoal-700/80 hover:border-violet-500/50 active:scale-95 shadow-sm">
+                    <i class="fa-solid fa-sliders text-violet-400"></i>
+                    <span class="hidden sm:inline">Pengaturan API</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col gap-6">
+
+        <!-- Navigation Tabs Bar -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-charcoal-800/80 pb-3.5 gap-3">
+            <nav class="flex space-x-2 bg-charcoal-900/90 p-1.5 rounded-2xl border border-charcoal-800" aria-label="Tabs">
+                <button id="tabBtnLyric" onclick="switchTab('lyric')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-violet-600 text-white shadow-lg shadow-violet-600/30">
+                    <i class="fa-solid fa-pen-nib"></i>
+                    <span>1. Generator Lirik</span>
+                </button>
+                <button id="tabBtnMusic" onclick="switchTab('music')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-charcoal-800/60">
+                    <i class="fa-solid fa-music"></i>
+                    <span>2. Generator Musik (MP3)</span>
+                </button>
+            </nav>
+
+            <div class="hidden lg:flex items-center gap-2 text-xs text-slate-400 bg-charcoal-900/60 px-3.5 py-2 rounded-xl border border-charcoal-800">
+                <i class="fa-solid fa-bolt text-amber-400"></i>
+                <span>OpenRouter AI & Dual Music API (Apiframe / Kie.ai)</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: Lyric Generator -->
+        <div id="tabContentLyric" class="grid lg:grid-cols-12 gap-6 items-start">
+            
+            <div class="lg:col-span-5 bg-charcoal-900/90 border border-charcoal-800 backdrop-blur-xl rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                    <h2 class="text-base font-bold font-heading text-white flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-violet-400"></i>
+                        Parameter Lirik AI
+                    </h2>
+                    <span class="text-xs text-slate-400">Via OpenRouter</span>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <!-- Lyric AI Model Selection -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Model AI Lirik (OpenRouter Free) <span class="text-rose-400">*</span></label>
+                        <select id="openrouterModelSelect" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all font-medium">
+                            <option value="nvidia/nemotron-3-ultra-550b-a55b:free" selected>NVIDIA Nemotron 3 Ultra (Free)</option>
+                            <option value="openai/gpt-oss-20b:free">OpenAI gpt-oss-20b (Free)</option>
+                            <option value="inclusionai/ling-3.0-flash:free">Ling-3.0-flash (Free)</option>
+                            <option value="meta-llama/llama-3.3-70b-instruct:free">Meta Llama 3.3 70B (Free)</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Country & Language Controls for Lyric Generator -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1.5">Negara / Wilayah Lirik</label>
+                            <select id="lyricCountrySelect" onchange="updateLyricLanguageOptions()" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all font-medium">
+                                <!-- Dynamic options -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1.5">Bahasa Lirik <span class="text-rose-400">*</span></label>
+                            <select id="lyricLanguageSelect" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all font-medium">
+                                <!-- Dynamic options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Topik / Tema Lagu <span class="text-rose-400">*</span></label>
+                        <textarea id="lyricTopic" rows="3" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all text-sm resize-none" placeholder="Misal: Kerinduan mendalam seseorang pada kampung halaman di saat senja..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Genre Musik Lirik</label>
+                        <select id="lyricGenre" onchange="syncLyricGenreToMusic(this.value)" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-violet-500">
+                            <option value="Pop / Modern Pop">Pop / Modern Pop</option>
+                            <option value="Acoustic / Folk / Indie">Indie Folk Akustik</option>
+                            <option value="Rock / Hard Rock / Alternative">Rock / Alternative</option>
+                            <option value="Dangdut / Dangdut Koplo">Dangdut Koplo Modern</option>
+                            <option value="EDM / Electronic / House / Synthwave">Synthwave / Retro</option>
+                            <option value="Lo-Fi / Chillhop">Lo-Fi Chill Hop</option>
+                            <option value="R&B / Soul / Funk">R&B / Soul</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Suasana / Mood Lagu</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" onclick="selectMood(this, 'Melankolis')" class="mood-btn active bg-violet-600/30 border-violet-500 text-violet-200 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Melankolis</button>
+                            <button type="button" onclick="selectMood(this, 'Energik')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Energik</button>
+                            <button type="button" onclick="selectMood(this, 'Romantis')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Romantis</button>
+                            <button type="button" onclick="selectMood(this, 'Semangat')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Semangat</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Kata Kunci Khusus / Instruksi Tambahan (Opsional)</label>
+                        <input id="lyricKeywords" type="text" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500" placeholder="Misal: Masukkan frasa 'Hujan di bulan Juli'...">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Struktur Lagu Termasuk</label>
+                        <div class="flex flex-wrap gap-2 text-[11px]">
+                            <label class="flex items-center gap-1.5 bg-charcoal-950/60 border border-charcoal-800 px-2.5 py-1 rounded-lg cursor-pointer text-slate-300">
+                                <input type="checkbox" id="structVerse" checked class="accent-violet-600"> Verse
+                            </label>
+                            <label class="flex items-center gap-1.5 bg-charcoal-950/60 border border-charcoal-800 px-2.5 py-1 rounded-lg cursor-pointer text-slate-300">
+                                <input type="checkbox" id="structChorus" checked class="accent-violet-600"> Chorus
+                            </label>
+                            <label class="flex items-center gap-1.5 bg-charcoal-950/60 border border-charcoal-800 px-2.5 py-1 rounded-lg cursor-pointer text-slate-300">
+                                <input type="checkbox" id="structBridge" checked class="accent-violet-600"> Bridge
+                            </label>
+                            <label class="flex items-center gap-1.5 bg-charcoal-950/60 border border-charcoal-800 px-2.5 py-1 rounded-lg cursor-pointer text-slate-300">
+                                <input type="checkbox" id="structOutro" checked class="accent-violet-600"> Outro
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="generateLyricBtn" onclick="handleGenerateLyric()" class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-600/25 flex items-center justify-center gap-2 transition-all active:scale-95">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Hasilkan Lirik Lagu</span>
+                </button>
+            </div>
+
+            <div class="lg:col-span-7 bg-charcoal-900/90 border border-charcoal-800 backdrop-blur-xl rounded-2xl p-5 shadow-xl flex flex-col gap-4 h-full min-h-[500px]">
+                <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines text-violet-400"></i>
+                        <h2 class="text-base font-bold font-heading text-white">Editor Lirik Hasil AI</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="charCount" class="text-xs text-slate-500">0 Karakter</span>
+                        <button onclick="copyLyricToClipboard()" class="p-1.5 text-xs text-slate-300 hover:text-white bg-charcoal-800 hover:bg-charcoal-700 rounded-lg border border-charcoal-700 transition-all" title="Salin Lirik">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <button onclick="clearLyricOutput()" class="p-1.5 text-xs text-slate-300 hover:text-rose-400 bg-charcoal-800 hover:bg-charcoal-700 rounded-lg border border-charcoal-700 transition-all" title="Bersihkan Editor">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <button onclick="downloadLyricTxt()" class="p-1.5 text-xs text-slate-300 hover:text-white bg-charcoal-800 hover:bg-charcoal-700 rounded-lg border border-charcoal-700 transition-all" title="Unduh .TXT">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative flex-1 flex flex-col">
+                    <textarea id="lyricOutput" class="w-full h-full min-h-[380px] bg-charcoal-950/80 border border-charcoal-800 rounded-xl p-4 text-slate-200 font-mono text-sm leading-relaxed focus:outline-none focus:border-violet-500/70 transition-all resize-y" placeholder="Lirik lagu buatan OpenRouter AI akan muncul di sini secara otomatis. Anda juga dapat mengeditnya secara bebas..."></textarea>
+                    
+                    <div id="lyricLoader" class="hidden absolute inset-0 bg-charcoal-950/90 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-3 z-20">
+                        <div class="w-10 h-10 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-spin"></div>
+                        <p class="text-sm font-medium text-slate-300 animate-pulse">Menghubungkan ke OpenRouter AI & Menyusun Lirik...</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="copyLyricToClipboard()" class="flex-1 sm:flex-initial px-3.5 py-2 bg-charcoal-800 hover:bg-charcoal-700 text-slate-200 text-xs font-semibold rounded-xl border border-charcoal-700 flex items-center justify-center gap-1.5 transition-all active:scale-95">
+                            <i class="fa-regular fa-copy text-violet-400"></i>
+                            <span>Salin Lirik</span>
+                        </button>
+                        <button onclick="clearLyricOutput()" class="flex-1 sm:flex-initial px-3.5 py-2 bg-charcoal-800 hover:bg-charcoal-700 text-rose-300 hover:text-rose-200 text-xs font-semibold rounded-xl border border-charcoal-700 flex items-center justify-center gap-1.5 transition-all active:scale-95">
+                            <i class="fa-solid fa-trash-can text-rose-400"></i>
+                            <span>Bersihkan</span>
+                        </button>
+                    </div>
+
+                    <button onclick="transferToMusicTab()" class="w-full sm:w-auto px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-violet-900/30 active:scale-95">
+                        <i class="fa-solid fa-music"></i>
+                        <span>Gunakan Lirik Ini untuk Musik</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Music Generator -->
+        <div id="tabContentMusic" class="hidden grid lg:grid-cols-12 gap-6 items-start">
+            
+            <div class="lg:col-span-5 bg-charcoal-900/90 border border-charcoal-800 backdrop-blur-xl rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                    <h2 class="text-base font-bold font-heading text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-violet-400"></i>
+                        Parameter Generator Musik
+                    </h2>
+                    <span id="activeProviderTag" class="text-xs px-2.5 py-0.5 rounded-lg bg-charcoal-800 text-violet-300 border border-charcoal-700 font-medium">Apiframe.ai</span>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <!-- Instrumental Mode Toggle -->
+                    <div class="flex items-center justify-between bg-charcoal-950/80 border border-charcoal-800 p-3 rounded-xl">
+                        <div>
+                            <span class="block font-semibold text-slate-200">Mode Instrumental Saja</span>
+                            <span class="text-[11px] text-slate-400">Hasil musik tanpa suara vokal</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="instrumentalToggle" onchange="toggleInstrumental(this)" class="sr-only peer">
+                            <div class="w-11 h-6 bg-charcoal-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Lyric Input Area -->
+                    <div id="lyricInputContainer">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="font-semibold text-slate-300">Lirik Lagu</label>
+                            <button onclick="clearMusicLyrics()" class="text-[11px] text-slate-400 hover:text-slate-200">Kosongkan</button>
+                        </div>
+                        <textarea id="musicLyrics" rows="4" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-all text-xs font-mono resize-none" placeholder="Masukkan lirik lagu lengkap di sini (lengkap dengan tag [Verse], [Chorus]...)..."></textarea>
+                    </div>
+
+                    <!-- Dynamic Country Selection for Music Generator -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Negara / Wilayah Musik</label>
+                        <select id="musicCountrySelect" onchange="updateMusicGenreOptions()" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all font-medium">
+                            <!-- Dynamic options -->
+                        </select>
+                    </div>
+
+                    <!-- Genre Dropdown (Dynamic ID kept identical: musicGenre) -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Pilihan Genre Musik</label>
+                        <select id="musicGenre" onchange="syncGenreToStyle(this.value)" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all">
+                            <!-- Dynamic options -->
+                        </select>
+                    </div>
+
+                    <!-- Song Mood Dropdown -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Suasana / Mood Lagu</label>
+                        <select id="musicMood" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all">
+                            <option value="Ceria / Happy / Upbeat">Ceria / Happy / Upbeat</option>
+                            <option value="Sedih / Galau / Emotional">Sedih / Galau / Emotional</option>
+                            <option value="Semangat / Energik / Motivational">Semangat / Energik / Motivational</option>
+                            <option value="Rileks / Santai / Chill / Peaceful">Rileks / Santai / Chill / Peaceful</option>
+                            <option value="Romantis / Manis / Sweet">Romantis / Manis / Sweet</option>
+                            <option value="Megah / Epik / Cinematic">Megah / Epik / Cinematic</option>
+                            <option value="Misterius / Gelap / Dark">Misterius / Gelap / Dark</option>
+                            <option value="Nostalgia / Retro / Melankolis">Nostalgia / Retro / Melankolis</option>
+                            <option value="Penuh Harapan / Inspiring / Uplifting">Penuh Harapan / Inspiring / Uplifting</option>
+                            <option value="Santai Pesisir / Tropical Vibes">Santai Pesisir / Tropical Vibes</option>
+                            <option value="Pesta / Funky / Party">Pesta / Funky / Party</option>
+                            <option value="Tegang / Intense / Suspenseful">Tegang / Intense / Suspenseful</option>
+                        </select>
+                    </div>
+
+                    <!-- Style & Instrumentation Tags -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Gaya Musik & Instrumentasi (Style Tags)</label>
+                        <input id="musicStyle" type="text" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500" placeholder="Misal: upbeat indie pop, acoustic guitar..." value="Pop">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div id="vocalSelectContainer">
+                            <label class="block font-semibold text-slate-300 mb-1.5">Karakter Vokal</label>
+                            <select id="vocalGender" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-violet-500">
+                                <option value="m">Vokal Pria (Male)</option>
+                                <option value="f">Vokal Wanita (Female)</option>
+                                <option value="">Duet / Netral</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1.5">Versi Model Suno</label>
+                            <select id="sunoModelVersion" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-violet-500">
+                                <option value="V5_5" selected>Model V5.5 (Custom - Paling Jernih)</option>
+                                <option value="V5">Model V5 (Ekspresi Tinggi)</option>
+                                <option value="V4_5PLUS">Model V4.5+ (Rich Audio)</option>
+                                <option value="V4_5">Model V4.5 (Smarter Prompt)</option>
+                                <option value="V4_5ALL">Model V4.5ALL (Full Track)</option>
+                                <option value="V4">Model V4 (Vocal Quality)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Song Title Input -->
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Judul Lagu</label>
+                        <input id="musicTitle" type="text" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500" placeholder="Misal: Bayangan Senja">
+                    </div>
+                </div>
+
+                <!-- Generate Music Button -->
+                <button id="generateMusicBtn" onclick="handleGenerateMusic()" class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-600/25 flex items-center justify-center gap-2 transition-all active:scale-95">
+                    <i class="fa-solid fa-compact-disc"></i>
+                    <span>Generate Musik MP3</span>
+                </button>
+            </div>
+
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <!-- Main Status & Custom Audio Player Card -->
+                <div class="bg-charcoal-900/90 border border-charcoal-800 backdrop-blur-xl rounded-2xl p-6 shadow-xl flex flex-col gap-5">
+                    <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-play text-violet-400 text-lg"></i>
+                            <h2 class="text-base font-bold font-heading text-white">Player & Status Generation</h2>
+                        </div>
+                        <span id="musicProcessBadge" class="text-xs px-2.5 py-1 rounded-full bg-charcoal-800 text-slate-400 border border-charcoal-700">Siap</span>
+                    </div>
+
+                    <!-- Generation Progress Box -->
+                    <div id="musicProgressBarBox" class="hidden flex-col gap-2 p-4 bg-charcoal-950/90 border border-violet-500/30 rounded-xl">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-medium text-violet-300 flex items-center gap-2">
+                                <i class="fa-solid fa-gear fa-spin text-violet-400"></i>
+                                <span id="progressStepText">AI sedang mengarang musik...</span>
+                            </span>
+                            <span id="progressPercent" class="font-mono text-violet-400 font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-charcoal-800 rounded-full h-2 overflow-hidden">
+                            <div id="progressBar" class="bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 h-2 rounded-full transition-all duration-300 w-0"></div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Visual Audio Player Widget -->
+                    <div id="audioPlayerContainer" class="bg-charcoal-950/80 border border-charcoal-800 rounded-2xl p-5 flex flex-col gap-4 relative overflow-hidden">
+                        <div class="absolute -top-12 -right-12 w-40 h-40 bg-violet-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                        <div class="flex items-center justify-between gap-4 z-10">
+                            <div class="flex items-center gap-4 overflow-hidden">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-600/20">
+                                    <i id="albumArtIcon" class="fa-solid fa-music text-white text-2xl"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h3 id="currentTrackTitle" class="text-base font-bold font-heading text-white truncate">Belum Ada Lagu Diputar</h3>
+                                    <p id="currentTrackSub" class="text-xs text-slate-400 truncate">Silakan buat lagu baru atau pilih dari riwayat</p>
+                                </div>
+                            </div>
+                            <span id="currentTrackGenreBadge" class="hidden sm:inline-block shrink-0 px-2.5 py-1 text-[11px] rounded-lg bg-violet-950/60 text-violet-300 border border-violet-800/50 font-medium">
+                                Studio
+                            </span>
+                        </div>
+
+                        <div id="equalizerVisualizer" class="h-14 bg-charcoal-900/90 rounded-xl border border-charcoal-800 flex items-end justify-center gap-1.5 p-3 overflow-hidden">
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-3"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-6"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-2"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-8"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-4"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-10"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-5"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-7"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-3"></div>
+                            <div class="bar w-1.5 bg-violet-500/50 rounded-full h-9"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <input type="range" id="audioSeekbar" min="0" max="100" value="0" oninput="seekAudio(this.value)" class="w-full accent-violet-500 bg-charcoal-800 h-1.5 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                                <span id="currentTimeText">00:00</span>
+                                <span id="durationTimeText">00:00</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-charcoal-800">
+                            <div class="flex items-center gap-3">
+                                <button id="playAudioBtn" onclick="togglePlayAudio()" class="w-11 h-11 rounded-full bg-violet-600 hover:bg-violet-500 text-white flex items-center justify-center shadow-lg shadow-violet-600/30 transition-all active:scale-95">
+                                    <i id="playIcon" class="fa-solid fa-play ml-0.5 text-base"></i>
+                                </button>
+
+                                <div class="flex items-center gap-2 text-slate-400 text-xs bg-charcoal-900/80 px-2.5 py-1.5 rounded-xl border border-charcoal-800">
+                                    <button type="button" onclick="toggleMuteAudio()" id="muteBtn" class="hover:text-slate-200">
+                                        <i id="muteIcon" class="fa-solid fa-volume-high"></i>
+                                    </button>
+                                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1.0" oninput="adjustVolume(this.value)" class="w-16 sm:w-20 accent-slate-300 bg-charcoal-800 h-1 rounded-lg">
+                                </div>
+                            </div>
+
+                            <button id="downloadAudioBtn" onclick="handleDownloadClick()" class="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-lg shadow-violet-900/20 flex items-center gap-2 transition-all opacity-50 pointer-events-none active:scale-95">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Download Lagu (.MP3)</span>
+                            </button>
+                        </div>
+
+                        <audio id="mainAudioPlayer" ontimeupdate="updateAudioProgress()" onloadedmetadata="updateAudioMetadata()" onended="onAudioEnded()" onerror="handleAudioError(event)"></audio>
+                    </div>
+                </div>
+
+                <!-- History Track List Card -->
+                <div class="bg-charcoal-900/90 border border-charcoal-800 backdrop-blur-xl rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-violet-400"></i>
+                            <h3 class="text-sm font-bold font-heading text-white">Daftar Lagu Hasil Generate</h3>
+                        </div>
+                        <button onclick="openConfirmClearModal()" class="text-xs text-rose-400 hover:text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 px-3 py-1 rounded-lg transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i>
+                            <span>Hapus Semua Riwayat</span>
+                        </button>
+                    </div>
+
+                    <div id="historyTrackList" class="grid sm:grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-1">
+                        <div class="sm:col-span-2 text-center py-8 text-slate-500 text-xs">
+                            Belum ada lagu yang disimpan. Lagu yang berhasil di-generate akan tersimpan secara otomatis di sini.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-charcoal-800 bg-charcoal-950 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 flex justify-center items-center">
+            <p>© 2026 AGE YT#3 Bikin Musik. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- API Settings Modal -->
+    <div id="apiModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-950/80 backdrop-blur-md transition-opacity duration-300">
+        <div class="bg-charcoal-900 border border-charcoal-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-5 relative max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-charcoal-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-lg font-bold font-heading text-white">Pengaturan API Key Studio</h3>
+                </div>
+                <button onclick="toggleModal('apiModal', false)" class="text-slate-400 hover:text-white text-sm p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                
+                <!-- 1. OpenRouter API Key Field -->
+                <div class="p-3.5 rounded-xl bg-charcoal-950/80 border border-charcoal-800 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-brain text-violet-400"></i>
+                            <span>OpenRouter API Key (Lirik)</span>
+                        </label>
+                        <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" class="text-[10px] text-violet-400 hover:underline">Dapatkan Key Gratis</a>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <input id="openrouterKeyInput" type="password" class="w-full bg-charcoal-900 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500 font-mono text-xs" placeholder="sk-or-v1-xxxxxxxxxxxx">
+                        <button type="button" onclick="checkProviderCredits('openrouter')" class="shrink-0 px-3 py-2 bg-charcoal-800 hover:bg-charcoal-700 text-violet-300 rounded-xl border border-charcoal-700 font-medium">
+                            Cek Status
+                        </button>
+                    </div>
+                    <span id="openrouterBadgeModal" class="text-[11px] text-slate-400">Status: Belum Diperiksa</span>
+                </div>
+
+                <!-- Active Music Provider Dropdown & Auto-Switch -->
+                <div class="p-3.5 rounded-xl bg-violet-950/30 border border-violet-800/40 flex flex-col gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-200 mb-1.5">Provider Musik Aktif</label>
+                        <select id="activeMusicProviderSelect" onchange="appState.activeMusicProvider = this.value" class="w-full bg-charcoal-900 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-violet-500 font-medium">
+                            <option value="Apiframe.ai">Apiframe.ai (Suno V2/V5.5)</option>
+                            <option value="Kie.ai">Kie.ai (Suno Bridge)</option>
+                        </select>
+                    </div>
+
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                        <input type="checkbox" id="autoSwitchToggle" checked onchange="appState.autoSwitchOnOutOfCredits = this.checked" class="accent-violet-600 w-4 h-4 rounded">
+                        <span>Otomatis alih provider jika koin provider aktif habis</span>
+                    </label>
+                </div>
+
+                <!-- 2. Apiframe.ai API Key Field -->
+                <div class="p-3.5 rounded-xl bg-charcoal-950/80 border border-charcoal-800 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-music text-purple-400"></i>
+                            <span>Apiframe.ai API Key (Musik)</span>
+                        </label>
+                        <a href="https://apiframe.ai" target="_blank" rel="noopener noreferrer" class="text-[10px] text-purple-400 hover:underline">apiframe.ai</a>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <input id="apiframeKeyInput" type="password" class="w-full bg-charcoal-900 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500 font-mono text-xs" placeholder="API Key Apiframe...">
+                        <button type="button" onclick="checkProviderCredits('apiframe')" class="shrink-0 px-3 py-2 bg-charcoal-800 hover:bg-charcoal-700 text-purple-300 rounded-xl border border-charcoal-700 font-medium">
+                            Cek Kredit
+                        </button>
+                    </div>
+                    <span id="apiframeBadgeModal" class="text-[11px] text-slate-400">Status: Belum Diperiksa</span>
+                </div>
+
+                <!-- 3. Kie.ai API Key Field -->
+                <div class="p-3.5 rounded-xl bg-charcoal-950/80 border border-charcoal-800 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-pink-400"></i>
+                            <span>Kie.ai API Key (Musik)</span>
+                        </label>
+                        <a href="https://kie.ai" target="_blank" rel="noopener noreferrer" class="text-[10px] text-pink-400 hover:underline">kie.ai</a>
+                    </div>
+                    <div class="relative flex items-center gap-2">
+                        <input id="kieaiKeyInput" type="password" class="w-full bg-charcoal-900 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-500 font-mono text-xs" placeholder="API Key Kie.ai...">
+                        <button type="button" onclick="checkProviderCredits('kieai')" class="shrink-0 px-3 py-2 bg-charcoal-800 hover:bg-charcoal-700 text-pink-300 rounded-xl border border-charcoal-700 font-medium">
+                            Cek Kredit
+                        </button>
+                    </div>
+                    <span id="kieaiBadgeModal" class="text-[11px] text-slate-400">Status: Belum Diperiksa</span>
+                </div>
+
+                <div id="modalStatusMsg" class="hidden text-xs p-3 rounded-xl border"></div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2 border-t border-charcoal-800">
+                <button onclick="toggleModal('apiModal', false)" class="px-4 py-2 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-slate-300 text-xs font-semibold">Batal</button>
+                <button id="saveApiBtn" onclick="saveApiSettings()" class="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-lg shadow-violet-600/30 flex items-center gap-1.5 transition-all">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Simpan Pengaturan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Clear History Modal -->
+    <div id="confirmClearModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-950/80 backdrop-blur-md transition-opacity duration-300">
+        <div class="bg-charcoal-900 border border-charcoal-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl flex flex-col gap-4 relative animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-950/60 border border-rose-800/60 flex items-center justify-center text-rose-400 shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white">Hapus Semua Riwayat?</h3>
+                    <p class="text-xs text-slate-400">Tindakan ini akan menghapus seluruh daftar lagu tersimpan di browser Anda.</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-charcoal-800">
+                <button onclick="toggleModal('confirmClearModal', false)" class="px-3.5 py-1.5 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-slate-300 text-xs font-semibold">Batal</button>
+                <button onclick="clearAllHistory()" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg shadow-rose-900/30 transition-all">Hapus Semua</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // 1. COUNTRY MUSIC DATASET
+        const countryMusicData = {
+          "intl": { name: "Internasional / Campuran", languages: ["Inggris", "Bahasa Indonesia"], genres: ["Pop", "Rock", "EDM / Electronic", "Hip Hop", "R&B", "Jazz", "Blues", "Classical", "Metal", "Country", "Reggae", "Funk", "Punk", "Acoustic", "Gospel", "Latin", "K-Pop", "Lo-fi"] },
+          "id": { name: "Indonesia", languages: ["Bahasa Indonesia", "Sunda", "Jawa", "Bali", "Minang", "Batak"], genres: ["Pop Indonesia", "Dangdut", "Koplo", "Campursari", "Keroncong", "Pop Sunda", "Pop Jawa", "Religi / Nasyid"] },
+          "my": { name: "Malaysia", languages: ["Bahasa Melayu", "Mandarin", "Tamil"], genres: ["Pop Melayu", "Dikir Barat", "Rock Kapak", "Nasyid", "Zapin"] },
+          "jp": { name: "Jepang", languages: ["Jepang"], genres: ["J-Pop", "City Pop", "Enka", "J-Rock", "Vocaloid", "Anime Anthem"] },
+          "kr": { name: "Korea Selatan", languages: ["Korea"], genres: ["K-Pop", "Trot", "K-R&B", "K-Ballad", "K-Hip Hop", "K-Indie"] },
+          "cn": { name: "Tiongkok", languages: ["Mandarin", "Kanton"], genres: ["Mandopop", "Cantopop", "Guofeng (Gaya Klasik)", "C-Rock"] },
+          "in": { name: "India", languages: ["Hindi", "Tamil", "Punjabi", "Bengali"], genres: ["Bollywood", "Bhangra", "Indipop", "Qawwali", "Carnatic Fusion"] },
+          "th": { name: "Thailand", languages: ["Thai"], genres: ["Luk Thung", "Mor Lam", "T-Pop", "Thai Rock"] },
+          "vn": { name: "Vietnam", languages: ["Vietnam"], genres: ["V-Pop", "Bolero Vietnam", "Nhạc Trẻ"] },
+          "ph": { name: "Filipina", languages: ["Tagalog", "Inggris"], genres: ["OPM (Original Pilipino Music)", "Pop Filipina", "Kundiman"] },
+          "us": { name: "Amerika Serikat", languages: ["Inggris", "Spanyol"], genres: ["Pop", "Hip Hop", "Country", "R&B", "Rock", "EDM", "Indie Folk", "Blues", "Gospel"] },
+          "gb": { name: "Inggris (UK)", languages: ["Inggris"], genres: ["Britpop", "UK Garage", "Grime", "Indie Rock", "Drum & Bass"] },
+          "br": { name: "Brasil", languages: ["Portugis"], genres: ["Samba", "Bossa Nova", "Funk Carioca", "Sertanejo", "MPB", "Forró"] },
+          "mx": { name: "Meksiko", languages: ["Spanyol"], genres: ["Mariachi", "Ranchera", "Cumbia", "Regional Mexicano", "Corridos", "Banda"] },
+          "es": { name: "Spanyol", languages: ["Spanyol", "Katalan"], genres: ["Flamenco", "Pop Latin", "Rumba Catalana", "Reggaeton Spanyol"] },
+          "fr": { name: "Prancis", languages: ["Prancis"], genres: ["Chanson Française", "French Pop", "French House / Electro", "Variété"] },
+          "de": { name: "Jerman", languages: ["Jerman"], genres: ["Schlager", "German Pop", "Krautrock", "German Techno"] },
+          "it": { name: "Italia", languages: ["Italia"], genres: ["Italo Pop", "Canzone Napoletana", "Italo Disco"] },
+          "ng": { name: "Nigeria", languages: ["Inggris", "Yoruba", "Igbo", "Hausa"], genres: ["Afrobeats", "Highlife", "Afro-Fusion", "Fuji"] },
+          "jm": { name: "Jamaika", languages: ["Inggris (Patois)"], genres: ["Reggae", "Dancehall", "Ska", "Rocksteady", "Dub"] },
+          "tr": { name: "Turki", languages: ["Turki"], genres: ["Pop Turki", "Arabesk", "Türkü (Folk Turki)", "Fantezi"] },
+          "ar": { name: "Timur Tengah / Arab", languages: ["Arab"], genres: ["Pop Arab", "Khaliji", "Rai", "Dabke"] },
+          "ru": { name: "Rusia", languages: ["Rusia"], genres: ["Pop Rusia (Estrada)", "Chanson Rusia", "Russian Rock"] }
+        };
+
+        window.lastLyricContent = "";
+        window.currentAudioUrl = "";
+        window.currentAudioTitle = "";
+        let activePollingInterval = null;
+
+        let appState = {
+            activeTab: 'lyric',
+            selectedMood: 'Melankolis',
+            activeMusicProvider: 'Apiframe.ai',
+            autoSwitchOnOutOfCredits: true,
+            providers: {
+                openrouter: { apiKey: '', status: 'Unchecked', lastChecked: null },
+                apiframe: { apiKey: '', credits: null, status: 'Unchecked', lastChecked: null },
+                kieai: { apiKey: '', credits: null, status: 'Unchecked', lastChecked: null }
+            },
+            isPlaying: false
+        };
+
+        function populateCountryDropdowns() {
+            const lyricCountrySelect = document.getElementById('lyricCountrySelect');
+            const musicCountrySelect = document.getElementById('musicCountrySelect');
+
+            const optionsHtml = Object.keys(countryMusicData).map(key => 
+                `<option value="${key}">${countryMusicData[key].name}</option>`
+            ).join('');
+
+            if (lyricCountrySelect) {
+                lyricCountrySelect.innerHTML = optionsHtml;
+                lyricCountrySelect.value = "intl";
+            }
+            if (musicCountrySelect) {
+                musicCountrySelect.innerHTML = optionsHtml;
+                musicCountrySelect.value = "intl";
+            }
+
+            updateLyricLanguageOptions();
+            updateMusicGenreOptions();
+        }
+
+        function updateLyricLanguageOptions() {
+            const lyricCountrySelect = document.getElementById('lyricCountrySelect');
+            const lyricLanguageSelect = document.getElementById('lyricLanguageSelect') || document.getElementById('lyricLanguage');
+            if (!lyricCountrySelect || !lyricLanguageSelect) return;
+
+            const countryKey = lyricCountrySelect.value || "intl";
+            const countryData = countryMusicData[countryKey] || countryMusicData["intl"];
+
+            lyricLanguageSelect.innerHTML = countryData.languages.map(lang => 
+                `<option value="${lang}">${lang}</option>`
+            ).join('');
+        }
+
+        function updateMusicGenreOptions() {
+            const musicCountrySelect = document.getElementById('musicCountrySelect');
+            const musicGenre = document.getElementById('musicGenre');
+            if (!musicCountrySelect || !musicGenre) return;
+
+            const countryKey = musicCountrySelect.value || "intl";
+            const countryData = countryMusicData[countryKey] || countryMusicData["intl"];
+
+            musicGenre.innerHTML = countryData.genres.map(genre => 
+                `<option value="${genre}">${genre}</option>`
+            ).join('');
+
+            if (musicGenre.options.length > 0) {
+                syncGenreToStyle(musicGenre.value);
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const bgClass = type === 'error' ? 'bg-rose-900/90 border-rose-700 text-rose-200' :
+                           type === 'success' ? 'bg-emerald-900/90 border-emerald-700 text-emerald-200' :
+                           'bg-slate-900/90 border-indigo-500/50 text-indigo-200';
+            
+            const iconClass = type === 'error' ? 'fa-circle-xmark text-rose-400' :
+                             type === 'success' ? 'fa-circle-check text-emerald-400' :
+                             'fa-circle-info text-indigo-400';
+
+            toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl border ${bgClass} backdrop-blur-md shadow-2xl text-xs font-medium pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 max-w-md`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm shrink-0"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 400);
+            }, 4500);
+        }
+
+        function switchTab(tabName) {
+            appState.activeTab = tabName;
+            const lyricTab = document.getElementById('tabContentLyric');
+            const musicTab = document.getElementById('tabContentMusic');
+            const lyricBtn = document.getElementById('tabBtnLyric');
+            const musicBtn = document.getElementById('tabBtnMusic');
+
+            if (tabName === 'lyric') {
+                lyricTab?.classList.remove('hidden');
+                musicTab?.classList.add('hidden');
+                
+                lyricBtn?.classList.add('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                lyricBtn?.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
+                
+                musicBtn?.classList.remove('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                musicBtn?.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
+            } else {
+                lyricTab?.classList.add('hidden');
+                musicTab?.classList.remove('hidden');
+
+                musicBtn?.classList.add('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                musicBtn?.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
+
+                lyricBtn?.classList.remove('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                lyricBtn?.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
+            }
+        }
+
+        function selectMood(element, mood) {
+            appState.selectedMood = mood;
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-violet-600/30', 'border-violet-500', 'text-violet-200');
+                btn.classList.add('bg-charcoal-950/60', 'border-charcoal-800', 'text-slate-400');
+            });
+            element.classList.add('active', 'bg-violet-600/30', 'border-violet-500', 'text-violet-200');
+            element.classList.remove('bg-charcoal-950/60', 'border-charcoal-800', 'text-slate-400');
+
+            const musicMoodSelect = document.getElementById('musicMood');
+            if (musicMoodSelect) {
+                for (let option of musicMoodSelect.options) {
+                    if (option.value.toLowerCase().includes(mood.toLowerCase())) {
+                        musicMoodSelect.value = option.value;
+                        break;
+                    }
+                }
+            }
+        }
+
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                if (show) modal.classList.remove('hidden');
+                else modal.classList.add('hidden');
+            }
+        }
+
+        function toggleInstrumental(checkbox) {
+            const lyricContainer = document.getElementById('lyricInputContainer');
+            const vocalContainer = document.getElementById('vocalSelectContainer');
+            
+            if (checkbox.checked) {
+                lyricContainer?.classList.add('opacity-50', 'pointer-events-none');
+                vocalContainer?.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                lyricContainer?.classList.remove('opacity-50', 'pointer-events-none');
+                vocalContainer?.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        function syncGenreToStyle(val) {
+            const styleInput = document.getElementById('musicStyle');
+            if (styleInput) {
+                styleInput.value = val;
+            }
+        }
+
+        function syncLyricGenreToMusic(val) {
+            const musicGenreSelect = document.getElementById('musicGenre');
+            if (musicGenreSelect) {
+                musicGenreSelect.value = val;
+                syncGenreToStyle(val);
+            }
+        }
+
+        async function checkProviderCredits(providerKeyName) {
+            let keyInput, modalBadge;
+            if (providerKeyName === 'openrouter') {
+                keyInput = document.getElementById('openrouterKeyInput')?.value.trim();
+                modalBadge = document.getElementById('openrouterBadgeModal');
+            } else if (providerKeyName === 'apiframe') {
+                keyInput = document.getElementById('apiframeKeyInput')?.value.trim();
+                modalBadge = document.getElementById('apiframeBadgeModal');
+            } else if (providerKeyName === 'kieai') {
+                keyInput = document.getElementById('kieaiKeyInput')?.value.trim();
+                modalBadge = document.getElementById('kieaiBadgeModal');
+            }
+
+            if (!keyInput) {
+                if (modalBadge) {
+                    modalBadge.className = 'text-[11px] text-rose-400';
+                    modalBadge.textContent = 'Status: API Key belum diisi';
+                }
+                showToast(`API Key ${providerKeyName} belum diisi!`, 'error');
+                return { success: false, credits: null, msg: 'API Key Kosong' };
+            }
+
+            if (modalBadge) {
+                modalBadge.className = 'text-[11px] text-amber-400 animate-pulse';
+                modalBadge.textContent = 'Status: Memeriksa...';
+            }
+
+            try {
+                if (providerKeyName === 'openrouter') {
+                    const res = await fetch('https://openrouter.ai/api/v1/auth/key', {
+                        method: 'GET',
+                        headers: { 
+                            'Authorization': 'Bearer ' + keyInput,
+                            'HTTP-Referer': window.location.href || 'https://aisongcrafter.studio',
+                            'X-OpenRouter-Title': 'AI Song Crafter Studio'
+                        }
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.error?.message || `HTTP ${res.status}`);
+                    }
+
+                    const data = await res.json();
+                    appState.providers.openrouter.apiKey = keyInput;
+                    appState.providers.openrouter.status = 'Ready';
+
+                    if (modalBadge) {
+                        modalBadge.className = 'text-[11px] text-emerald-400';
+                        modalBadge.textContent = `Status: 🟢 Key Valid (${data.data?.label || 'Active'})`;
+                    }
+                    updateHeaderBadges();
+                    showToast('API Key OpenRouter valid & siap digunakan!', 'success');
+                    return { success: true, credits: 'Valid' };
+
+                } else if (providerKeyName === 'apiframe') {
+                    const res = await fetch('https://green-sea-0373.kitakustik-managemen.workers.dev/v2/me', {
+                        method: 'GET',
+                        headers: { 'X-API-Key': keyInput }
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.message || errData.error || `HTTP ${res.status}`);
+                    }
+
+                    const data = await res.json();
+                    let rawCredit = data.team?.credits !== undefined ? data.team.credits :
+                                    data.data?.credits !== undefined ? data.data.credits :
+                                    data.credits !== undefined ? data.credits :
+                                    data.balance !== undefined ? data.balance :
+                                    data.data?.balance !== undefined ? data.data.balance : null;
+
+                    if (rawCredit === null) {
+                        throw new Error('Format response kredit Apiframe tidak dikenali');
+                    }
+
+                    const numericCredits = parseInt(rawCredit, 10);
+                    appState.providers.apiframe.apiKey = keyInput;
+                    appState.providers.apiframe.credits = numericCredits;
+                    appState.providers.apiframe.status = 'Ready';
+
+                    if (modalBadge) {
+                        modalBadge.className = 'text-[11px] text-emerald-400';
+                        modalBadge.textContent = `Status: 🟢 Koin: ${numericCredits}`;
+                    }
+                    updateHeaderBadges();
+                    showToast(`Kredit Apiframe.ai: ${numericCredits} koin`, 'success');
+                    return { success: true, credits: numericCredits };
+
+                } else if (providerKeyName === 'kieai') {
+                    const res = await fetch('https://api.kie.ai/api/v1/chat/credit', {
+                        method: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + keyInput }
+                    });
+
+                    const data = await res.json().catch(() => ({}));
+
+                    if (data.code !== 200 && data.code !== 0) {
+                        throw new Error(data.msg || data.message || `HTTP Code ${data.code || res.status}`);
+                    }
+
+                    let rawCredit = data.data !== undefined ? data.data : data.credits;
+                    if (rawCredit === undefined || rawCredit === null) {
+                        throw new Error('Format response kredit Kie.ai tidak dikenali');
+                    }
+
+                    const numericCredits = parseInt(rawCredit, 10);
+                    appState.providers.kieai.apiKey = keyInput;
+                    appState.providers.kieai.credits = numericCredits;
+                    appState.providers.kieai.status = 'Ready';
+
+                    if (modalBadge) {
+                        modalBadge.className = 'text-[11px] text-emerald-400';
+                        modalBadge.textContent = `Status: 🟢 Koin: ${numericCredits}`;
+                    }
+                    updateHeaderBadges();
+                    showToast(`Kredit Kie.ai: ${numericCredits} koin`, 'success');
+                    return { success: true, credits: numericCredits };
+                }
+
+            } catch (err) {
+                console.warn(`Credit check error for ${providerKeyName}:`, err.message);
+                
+                let friendlyMsg = err.message;
+                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    friendlyMsg = `Gagal terhubung ke server ${providerKeyName} — kemungkinan diblokir kebijakan CORS browser. Coba jalankan via server backend.`;
+                }
+
+                if (modalBadge) {
+                    modalBadge.className = 'text-[11px] text-rose-400';
+                    modalBadge.textContent = `Status: 🔴 ${friendlyMsg}`;
+                }
+
+                showToast(`Pengecekan ${providerKeyName} gagal: ${friendlyMsg}`, 'error');
+                return { success: false, credits: null, msg: friendlyMsg };
+            }
+        }
+
+        async function refreshCreditsManual() {
+            const icon = document.getElementById('refreshCoinIcon');
+            if (icon) icon.classList.add('fa-spin');
+
+            const activeProv = appState.activeMusicProvider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            if (appState.providers[activeProv].apiKey) {
+                await checkProviderCredits(activeProv);
+            } else {
+                showToast("API Key untuk provider musik aktif belum diisi!", "error");
+            }
+
+            if (icon) setTimeout(() => icon.classList.remove('fa-spin'), 600);
+        }
+
+        function updateHeaderBadges() {
+            // 1. OpenRouter Badge
+            const openrouterDot = document.getElementById('openrouterDot');
+            const openrouterText = document.getElementById('openrouterText');
+            const openrouterBadge = document.getElementById('openrouterBadge');
+
+            if (appState.providers.openrouter.apiKey) {
+                if (openrouterDot) openrouterDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                if (openrouterText) openrouterText.textContent = "OpenRouter AI: Ready";
+                if (openrouterBadge) openrouterBadge.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-800/50 font-medium text-emerald-300";
+            } else {
+                if (openrouterDot) openrouterDot.className = "w-2 h-2 rounded-full bg-slate-500";
+                if (openrouterText) openrouterText.textContent = "Lirik: Key Belum Diset";
+                if (openrouterBadge) openrouterBadge.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-charcoal-900 border border-charcoal-800 font-medium text-slate-400";
+            }
+
+            // 2. Active Music Provider Badge & Credits
+            const activeProv = appState.activeMusicProvider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            const provObj = appState.providers[activeProv];
+
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const apiStatusBadge = document.getElementById('apiStatusBadge');
+            const creditBalance = document.getElementById('creditBalance');
+            const activeProviderTag = document.getElementById('activeProviderTag');
+
+            if (provObj.apiKey) {
+                if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                if (statusText) statusText.textContent = `${appState.activeMusicProvider}: Aktif`;
+                if (apiStatusBadge) apiStatusBadge.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-800/50 font-medium text-emerald-300";
+            } else {
+                if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+                if (statusText) statusText.textContent = `${appState.activeMusicProvider}: Key Belum Diset`;
+                if (apiStatusBadge) apiStatusBadge.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-charcoal-900 border border-charcoal-800 font-medium text-slate-400";
+            }
+
+            if (creditBalance) {
+                creditBalance.textContent = provObj.credits !== null ? provObj.credits : '-';
+            }
+
+            if (activeProviderTag) {
+                activeProviderTag.textContent = appState.activeMusicProvider;
+            }
+        }
+
+        async function saveApiSettings() {
+            const openrouterKey = document.getElementById('openrouterKeyInput')?.value.trim() || '';
+            const apiframeKey = document.getElementById('apiframeKeyInput')?.value.trim() || '';
+            const kieaiKey = document.getElementById('kieaiKeyInput')?.value.trim() || '';
+            const activeMusicProv = document.getElementById('activeMusicProviderSelect')?.value || 'Apiframe.ai';
+            const autoSwitch = document.getElementById('autoSwitchToggle')?.checked ?? true;
+
+            appState.providers.openrouter.apiKey = openrouterKey;
+            appState.providers.apiframe.apiKey = apiframeKey;
+            appState.providers.kieai.apiKey = kieaiKey;
+            appState.activeMusicProvider = activeMusicProv;
+            appState.autoSwitchOnOutOfCredits = autoSwitch;
+
+            localStorage.setItem('aisc_openrouter_key', openrouterKey);
+            localStorage.setItem('aisc_apiframe_key', apiframeKey);
+            localStorage.setItem('aisc_kieai_key', kieaiKey);
+            localStorage.setItem('aisc_active_music_provider', activeMusicProv);
+            localStorage.setItem('aisc_autoswitch', autoSwitch ? 'true' : 'false');
+
+            updateHeaderBadges();
+            showToast('Pengaturan API Key tersimpan!', 'success');
+            toggleModal('apiModal', false);
+
+            if (openrouterKey) checkProviderCredits('openrouter');
+            if (apiframeKey) checkProviderCredits('apiframe');
+            if (kieaiKey) checkProviderCredits('kieai');
+        }
+
+        async function generateLyricsWithOpenRouter(topic, lang, genre, mood, keywords, selectedModel) {
+            const openrouterKey = appState.providers.openrouter.apiKey;
+
+            if (!openrouterKey) {
+                throw new Error("API Key OpenRouter belum diisi! Silakan buka Pengaturan API.");
+            }
+
+            const systemInstructionText = `Kamu adalah penulis lirik lagu profesional. Tulis SELURUH lirik dalam bahasa ${lang}, gunakan gaya bahasa natural penutur asli daerah tersebut, jangan campur bahasa lain kecuali memang lazim dicampur dalam bahasa itu. 
+Gaya genre: ${genre}, Suasana/Mood: ${mood}.
+Instruksi tambahan: ${keywords || 'Buat lirik yang puitis, unik, dan kaya emosi.'}
+Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro] sesuai kaidah lagu modern. Hanya kembalikan teks lirik lagu.`;
+
+            const userPromptText = `Buatkan lirik lagu tentang: "${topic}" dalam ${lang}.`;
+
+            const modelsToTry = [
+                selectedModel || 'nvidia/nemotron-3-ultra-550b-a55b:free',
+                'openai/gpt-oss-20b:free',
+                'inclusionai/ling-3.0-flash:free',
+                'meta-llama/llama-3.3-70b-instruct:free'
+            ];
+            
+            const uniqueModels = [...new Set(modelsToTry)];
+            let lastError = null;
+
+            for (const currentModel of uniqueModels) {
+                try {
+                    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + openrouterKey,
+                            'Content-Type': 'application/json',
+                            'HTTP-Referer': window.location.href || 'https://aisongcrafter.studio',
+                            'X-OpenRouter-Title': 'AI Song Crafter Studio'
+                        },
+                        body: JSON.stringify({
+                            model: currentModel,
+                            messages: [
+                                { role: 'system', content: systemInstructionText },
+                                { role: 'user', content: userPromptText }
+                            ],
+                            temperature: 0.95
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        const errMsg = errData.error?.message || `Error HTTP ${res.status}`;
+                        throw new Error(`OpenRouter (${currentModel}): ${errMsg}`);
+                    }
+
+                    const data = await res.json();
+                    console.log(`OpenRouter response from ${currentModel}:`, data);
+
+                    let extractedText = "";
+                    const choice = data.choices?.[0];
+
+                    if (choice) {
+                        if (typeof choice.message?.content === 'string') {
+                            extractedText = choice.message.content;
+                        } else if (Array.isArray(choice.message?.content)) {
+                            extractedText = choice.message.content
+                                .map(part => typeof part === 'string' ? part : (part.text || part.value || ''))
+                                .filter(Boolean)
+                                .join('\n');
+                        } else if (choice.message?.reasoning || choice.message?.reasoning_content) {
+                            extractedText = choice.message.reasoning || choice.message.reasoning_content;
+                        } else if (typeof choice.text === 'string') {
+                            extractedText = choice.text;
+                        }
+                    }
+
+                    if (extractedText && extractedText.trim().length > 0) {
+                        return extractedText.trim();
+                    }
+
+                    console.warn(`Model ${currentModel} returned empty content, trying alternative model...`);
+                } catch (err) {
+                    console.warn(`Attempt with ${currentModel} failed:`, err.message);
+                    lastError = err;
+                }
+            }
+
+            throw lastError || new Error("Gagal memperoleh lirik dari OpenRouter AI. Silakan periksa API Key atau coba beberapa saat lagi.");
+        }
+
+        async function handleGenerateLyric() {
+            const topicInput = document.getElementById('lyricTopic');
+            const langSelect = document.getElementById('lyricLanguageSelect') || document.getElementById('lyricLanguage');
+            const genreSelect = document.getElementById('lyricGenre');
+            const keywordsInput = document.getElementById('lyricKeywords');
+            const modelSelect = document.getElementById('openrouterModelSelect');
+            const outputTextarea = document.getElementById('lyricOutput');
+            const loader = document.getElementById('lyricLoader');
+            const generateBtn = document.getElementById('generateLyricBtn');
+
+            const topic = topicInput?.value.trim() || '';
+            const lang = langSelect?.value || 'Bahasa Indonesia';
+            const genre = genreSelect?.value || 'Pop / Modern Pop';
+            const keywords = keywordsInput?.value.trim() || '';
+            const model = modelSelect?.value || 'nvidia/nemotron-3-ultra-550b-a55b:free';
+
+            if (!topic) {
+                showToast('Harap isi topik/tema lagu terlebih dahulu!', 'error');
+                if (topicInput) {
+                    topicInput.classList.add('border-rose-500');
+                    topicInput.focus();
+                    setTimeout(() => topicInput.classList.remove('border-rose-500'), 2500);
+                }
+                return;
+            }
+
+            if (loader) loader.classList.remove('hidden');
+            if (generateBtn) {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Menyusun Lirik via OpenRouter...</span>`;
+            }
+
+            try {
+                const lyricResult = await generateLyricsWithOpenRouter(topic, lang, genre, appState.selectedMood, keywords, model);
+
+                if (outputTextarea) {
+                    outputTextarea.value = lyricResult;
+                    const charCount = document.getElementById('charCount');
+                    if (charCount) charCount.textContent = `${lyricResult.length} Karakter`;
+                }
+
+                // Automatic Sync to Tab 2
+                const musicLyrics = document.getElementById('musicLyrics');
+                const musicTitle = document.getElementById('musicTitle');
+                if (musicLyrics) musicLyrics.value = lyricResult;
+                if (musicTitle && !musicTitle.value) musicTitle.value = topic.slice(0, 35);
+                
+                syncLyricGenreToMusic(genre);
+
+                showToast('Lirik lagu berhasil dibuat & tersinkron ke Generator Musik!', 'success');
+
+            } catch (err) {
+                console.error("Error generating lyric:", err);
+                let msg = err.message;
+                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    msg = "Gagal terhubung ke OpenRouter — periksa koneksi internet atau kebijakan CORS browser.";
+                }
+                showToast(msg, 'error');
+            } finally {
+                if (loader) loader.classList.add('hidden');
+                if (generateBtn) {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i><span>Hasilkan Lirik Lagu</span>`;
+                }
+            }
+        }
+
+        function copyLyricToClipboard() {
+            const outputTextarea = document.getElementById('lyricOutput');
+            if (!outputTextarea || !outputTextarea.value.trim()) {
+                showToast('Tidak ada lirik untuk disalin!', 'error');
+                return;
+            }
+            
+            outputTextarea.select();
+            document.execCommand('copy');
+            showToast('Lirik berhasil disalin ke clipboard!', 'success');
+        }
+
+        function clearLyricOutput() {
+            const outputTextarea = document.getElementById('lyricOutput');
+            const charCount = document.getElementById('charCount');
+            if (outputTextarea) outputTextarea.value = '';
+            if (charCount) charCount.textContent = '0 Karakter';
+            showToast('Editor lirik telah dikosongkan', 'info');
+        }
+
+        function downloadLyricTxt() {
+            const outputTextarea = document.getElementById('lyricOutput');
+            if (!outputTextarea || !outputTextarea.value.trim()) {
+                showToast('Editor lirik masih kosong!', 'error');
+                return;
+            }
+
+            const blob = new Blob([outputTextarea.value], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lirik_ai_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('File lirik .TXT berhasil diunduh!', 'success');
+        }
+
+        function transferToMusicTab() {
+            const outputTextarea = document.getElementById('lyricOutput');
+            const musicLyrics = document.getElementById('musicLyrics');
+            const topicInput = document.getElementById('lyricTopic');
+            const musicTitle = document.getElementById('musicTitle');
+
+            if (!outputTextarea || !outputTextarea.value.trim()) {
+                showToast('Silakan hasilkan lirik terlebih dahulu!', 'error');
+                return;
+            }
+
+            if (musicLyrics) {
+                musicLyrics.value = outputTextarea.value;
+            }
+
+            if (topicInput && topicInput.value.trim() && musicTitle) {
+                musicTitle.value = topicInput.value.trim().slice(0, 35);
+            }
+
+            switchTab('music');
+            showToast('Lirik ditransfer ke Generator Musik!', 'success');
+        }
+
+        function clearMusicLyrics() {
+            const musicLyrics = document.getElementById('musicLyrics');
+            if (musicLyrics) musicLyrics.value = '';
+            showToast('Lirik musik dikosongkan', 'info');
+        }
+
+        async function submitMusicTask(provider, params) {
+            const activeProvKey = provider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            const apiKey = appState.providers[activeProvKey].apiKey;
+
+            if (!apiKey) {
+                throw new Error(`API Key untuk ${provider} belum diset! Silakan atur di Pengaturan API.`);
+            }
+
+            const cleanTitle = (params.title || "Lagu AI").trim().substring(0, 80);
+            const cleanLyrics = (params.lyrics || "").trim().substring(0, 5000);
+            const isInstrumental = Boolean(params.isInstrumental);
+            const styleString = `${params.genre}, ${params.mood}`;
+
+            if (provider === 'Apiframe.ai') {
+                const res = await fetch('https://green-sea-0373.kitakustik-managemen.workers.dev/v2/music/generate', {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: cleanLyrics,
+                        model: "suno",
+                        sunoParams: {
+                            custom_mode: true,
+                            title: cleanTitle,
+                            style: styleString,
+                            vocal_gender: isInstrumental ? "" : (params.vocal || "m"),
+                            instrumental: isInstrumental,
+                            model_version: params.modelVersion || "V5_5"
+                        }
+                    })
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    const errMsg = errData.message || errData.msg || errData.error || `HTTP Error ${res.status}`;
+                    
+                    if (res.status === 402 || errMsg.toLowerCase().includes('credit') || errMsg.toLowerCase().includes('balance')) {
+                        throw new Error(`INSUFFICIENT_CREDITS: ${errMsg}`);
+                    }
+                    throw new Error(`Apiframe Error: ${errMsg}`);
+                }
+
+                const data = await res.json();
+                const jobId = data.jobId || data.id || data.data?.jobId;
+                
+                if (!jobId) {
+                    throw new Error("Apiframe tidak mengembalikan jobId valid.");
+                }
+
+                return jobId;
+
+            } else if (provider === 'Kie.ai') {
+                const res = await fetch('https://api.kie.ai/api/v1/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: cleanLyrics,
+                        customMode: true,
+                        instrumental: isInstrumental,
+                        model: params.modelVersion || "V5_5",
+                        style: styleString,
+                        title: cleanTitle,
+                        vocalGender: isInstrumental ? "" : (params.vocal || "m"),
+                        callBackUrl: "https://example.com/callback"
+                    })
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (data.code === 402 || (data.msg && data.msg.toLowerCase().includes('credit'))) {
+                    throw new Error(`INSUFFICIENT_CREDITS: ${data.msg || 'Koin Kie.ai habis'}`);
+                }
+
+                if (data.code !== 200 && data.code !== 0 && !res.ok) {
+                    throw new Error(`Kie.ai Error: ${data.msg || data.message || 'Gagal membuat tugas musik'}`);
+                }
+
+                const taskId = data.data?.taskId || data.taskId || data.data?.id || data.id;
+                if (!taskId) {
+                    throw new Error("Kie.ai tidak mengembalikan taskId valid.");
+                }
+
+                return taskId;
+            }
+        }
+
+        async function handleGenerateMusic() {
+            const lyricsInput = document.getElementById('musicLyrics');
+            const titleInput = document.getElementById('musicTitle');
+            const genreSelect = document.getElementById('musicGenre');
+            const moodSelect = document.getElementById('musicMood');
+            const vocalSelect = document.getElementById('vocalGender');
+            const modelSelect = document.getElementById('sunoModelVersion');
+            const instrumentalToggle = document.getElementById('instrumentalToggle');
+            const generateBtn = document.getElementById('generateMusicBtn');
+
+            const isInstrumental = instrumentalToggle ? instrumentalToggle.checked : false;
+            const rawLyrics = lyricsInput?.value || '';
+
+            if (!isInstrumental && !rawLyrics.trim()) {
+                showToast('Lirik lagu wajib diisi jika bukan instrumental!', 'error');
+                if (lyricsInput) lyricsInput.focus();
+                return;
+            }
+
+            let activeProv = appState.activeMusicProvider;
+            const activeProvKey = activeProv === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            const activeApiKey = appState.providers[activeProvKey]?.apiKey;
+
+            if (!activeApiKey && appState.autoSwitchOnOutOfCredits) {
+                const altProv = activeProv === 'Apiframe.ai' ? 'Kie.ai' : 'Apiframe.ai';
+                const altProvKey = altProv === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+                const altApiKey = appState.providers[altProvKey]?.apiKey;
+
+                if (altApiKey) {
+                    showToast(`Provider ${activeProv} belum diset key-nya. Otomatis memakai ${altProv}.`, 'info');
+                    activeProv = altProv;
+                    appState.activeMusicProvider = altProv;
+                    updateHeaderBadges();
+                }
+            }
+
+            const title = titleInput?.value.trim() || 'Lagu AI ' + new Date().toLocaleTimeString('id-ID');
+            const genre = genreSelect?.value || 'Pop / Modern Pop';
+            const mood = moodSelect?.value || 'Ceria / Happy / Upbeat';
+            const vocal = vocalSelect?.value || 'm';
+            const modelVersion = modelSelect?.value || 'V5_5';
+
+            if (generateBtn) {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Mengirim Tugas Musik...</span>`;
+            }
+
+            const progressBarBox = document.getElementById('musicProgressBarBox');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressStepText = document.getElementById('progressStepText');
+            const musicProcessBadge = document.getElementById('musicProcessBadge');
+
+            if (progressBarBox) progressBarBox.classList.remove('hidden');
+            if (progressBar) progressBar.style.width = '10%';
+            if (progressPercent) progressPercent.textContent = '10%';
+            if (progressStepText) progressStepText.textContent = `Mengirim tugas ke ${activeProv}...`;
+            if (musicProcessBadge) {
+                musicProcessBadge.className = "text-xs px-2.5 py-1 rounded-full bg-amber-950/60 text-amber-300 border border-amber-800/60 animate-pulse";
+                musicProcessBadge.textContent = "Proses Generasi...";
+            }
+
+            try {
+                let taskId;
+                try {
+                    taskId = await submitMusicTask(activeProv, {
+                        title, lyrics: rawLyrics, genre, mood, vocal, modelVersion, isInstrumental
+                    });
+                } catch (firstErr) {
+                    if (firstErr.message.includes('INSUFFICIENT_CREDITS') && appState.autoSwitchOnOutOfCredits) {
+                        const altProv = activeProv === 'Apiframe.ai' ? 'Kie.ai' : 'Apiframe.ai';
+                        const altProvKey = altProv === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+
+                        if (appState.providers[altProvKey].apiKey) {
+                            showToast(`Koin ${activeProv} habis. Otomatis beralih ke ${altProv}...`, 'info');
+                            activeProv = altProv;
+                            appState.activeMusicProvider = altProv;
+                            updateHeaderBadges();
+
+                            if (progressStepText) progressStepText.textContent = `Dialihkan ke ${activeProv}...`;
+                            taskId = await submitMusicTask(activeProv, {
+                                title, lyrics: rawLyrics, genre, mood, vocal, modelVersion, isInstrumental
+                            });
+                        } else {
+                            throw firstErr;
+                        }
+                    } else {
+                        throw firstErr;
+                    }
+                }
+
+                if (progressBar) progressBar.style.width = '25%';
+                if (progressPercent) progressPercent.textContent = '25%';
+                if (progressStepText) progressStepText.textContent = 'Tugas diterima server! Menunggu rendering audio...';
+
+                pollMusicStatus(activeProv, taskId, title, `${genre} • ${mood}`);
+
+            } catch (err) {
+                console.warn("Music generation error:", err.message);
+                
+                let friendlyMsg = err.message;
+                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    friendlyMsg = `Gagal terhubung ke ${activeProv} — kemungkinan diblokir kebijakan CORS browser. Coba jalankan tools ini lewat server backend (Node.js).`;
+                }
+
+                showToast(friendlyMsg, 'error');
+                finalizeMusicError(friendlyMsg);
+            } finally {
+                if (generateBtn) {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = `<i class="fa-solid fa-compact-disc"></i><span>Generate Musik MP3</span>`;
+                }
+            }
+        }
+
+        function pollMusicStatus(provider, taskId, title, subtitle) {
+            if (activePollingInterval) clearInterval(activePollingInterval);
+
+            let secondsElapsed = 0;
+            const maxSeconds = 240; // 4 Minutes Max Timeout
+
+            const activeProvKey = provider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            const apiKey = appState.providers[activeProvKey].apiKey;
+
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressStepText = document.getElementById('progressStepText');
+
+            activePollingInterval = setInterval(async () => {
+                secondsElapsed += 3;
+                const calcPercent = Math.min(95, 25 + Math.floor((secondsElapsed / maxSeconds) * 70));
+
+                if (progressBar) progressBar.style.width = `${calcPercent}%`;
+                if (progressPercent) progressPercent.textContent = `${calcPercent}%`;
+                if (progressStepText) {
+                    progressStepText.textContent = `AI sedang mengarang musik... (${secondsElapsed} dtk)`;
+                }
+
+                try {
+                    if (provider === 'Apiframe.ai') {
+                        const res = await fetch(`https://green-sea-0373.kitakustik-managemen.workers.dev/v2/jobs/${taskId}`, {
+                            headers: { 'X-API-Key': apiKey }
+                        });
+
+                        if (res.ok) {
+                            const resData = await res.json();
+                            const statusStr = (resData.status || resData.data?.status || '').toUpperCase();
+
+                            if (statusStr === 'COMPLETED' || statusStr === 'SUCCESS') {
+                                const audioUrl = resData.result?.tracks?.[0]?.audioUrl || resData.tracks?.[0]?.audioUrl;
+                                if (audioUrl) {
+                                    clearInterval(activePollingInterval);
+                                    activePollingInterval = null;
+                                    finalizeMusicSuccess(audioUrl, title, subtitle, {
+                                        genre: document.getElementById('musicGenre')?.value,
+                                        mood: document.getElementById('musicMood')?.value,
+                                        lyrics: document.getElementById('musicLyrics')?.value
+                                    });
+                                    return;
+                                }
+                            } else if (statusStr === 'FAILED' || statusStr === 'ERROR') {
+                                clearInterval(activePollingInterval);
+                                activePollingInterval = null;
+                                finalizeMusicError(`Generasi musik gagal: ${resData.message || 'Status FAILED'}`);
+                                return;
+                            }
+                        }
+
+                    } else if (provider === 'Kie.ai') {
+                        const res = await fetch(`https://api.kie.ai/api/v1/generate/record-info?taskId=${taskId}`, {
+                            headers: { 'Authorization': 'Bearer ' + apiKey }
+                        });
+
+                        if (res.ok) {
+                            const resData = await res.json();
+                            const statusStr = (resData.data?.status || resData.status || '').toUpperCase();
+
+                            if (statusStr === 'SUCCESS' || statusStr === 'COMPLETED') {
+                                const audioUrl = resData.data?.response?.sunoData?.[0]?.audioUrl || 
+                                                 resData.response?.sunoData?.[0]?.audioUrl;
+                                if (audioUrl) {
+                                    clearInterval(activePollingInterval);
+                                    activePollingInterval = null;
+                                    finalizeMusicSuccess(audioUrl, title, subtitle, {
+                                        genre: document.getElementById('musicGenre')?.value,
+                                        mood: document.getElementById('musicMood')?.value,
+                                        lyrics: document.getElementById('musicLyrics')?.value
+                                    });
+                                    return;
+                                }
+                            } else if (statusStr === 'FAILED' || statusStr === 'ERROR' || resData.code === 500) {
+                                clearInterval(activePollingInterval);
+                                activePollingInterval = null;
+                                finalizeMusicError(`Generasi musik gagal: ${resData.msg || 'Status FAILED'}`);
+                                return;
+                            }
+                        }
+                    }
+
+                } catch (err) {
+                    console.warn("Polling tick warning:", err.message);
+                }
+
+                if (secondsElapsed >= maxSeconds) {
+                    clearInterval(activePollingInterval);
+                    activePollingInterval = null;
+                    finalizeMusicError("Waktu generasi lagu habis (Timeout 4 menit). Silakan coba lagi.");
+                }
+            }, 3000);
+        }
+
+        function finalizeMusicSuccess(audioUrl, title, subtitle, extraMeta = {}) {
+            const progressBarBox = document.getElementById('musicProgressBarBox');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressStepText = document.getElementById('progressStepText');
+            const musicProcessBadge = document.getElementById('musicProcessBadge');
+
+            if (progressBar) progressBar.style.width = '100%';
+            if (progressPercent) progressPercent.textContent = '100%';
+            if (progressStepText) progressStepText.textContent = 'Musik berhasil dibuat!';
+            
+            if (musicProcessBadge) {
+                musicProcessBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-800/60";
+                musicProcessBadge.textContent = "Selesai ✨";
+            }
+
+            setTimeout(() => {
+                if (progressBarBox) progressBarBox.classList.add('hidden');
+            }, 2500);
+
+            initCustomAudioPlayer(audioUrl, title, subtitle);
+
+            saveSongToHistory({
+                id: Date.now(),
+                title: title,
+                genre: extraMeta.genre || document.getElementById('musicGenre')?.value || 'Pop',
+                mood: extraMeta.mood || document.getElementById('musicMood')?.value || 'Ceria',
+                audioUrl: audioUrl,
+                lyrics: extraMeta.lyrics || document.getElementById('musicLyrics')?.value || '',
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+            });
+
+            const activeProvKey = appState.activeMusicProvider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
+            if (appState.providers[activeProvKey].apiKey) {
+                checkProviderCredits(activeProvKey);
+            }
+
+            showToast('🎉 Lagu AI berhasil dibuat dan siap diputar!', 'success');
+        }
+
+        function finalizeMusicError(errMsg) {
+            const progressBarBox = document.getElementById('musicProgressBarBox');
+            const musicProcessBadge = document.getElementById('musicProcessBadge');
+
+            if (progressBarBox) progressBarBox.classList.add('hidden');
+            if (musicProcessBadge) {
+                musicProcessBadge.className = "text-xs px-2.5 py-1 rounded-full bg-rose-950/60 text-rose-300 border border-rose-800/60";
+                musicProcessBadge.textContent = "Gagal ❌";
+            }
+
+            showToast(errMsg || 'Proses pembuatan lagu gagal.', 'error');
+        }
+
+        async function initCustomAudioPlayer(audioUrl, title, subtitle) {
+            if (!audioUrl) return;
+
+            window.currentAudioUrl = audioUrl;
+            window.currentAudioTitle = title || 'Lagu AI';
+
+            const player = document.getElementById('mainAudioPlayer');
+            const trackTitle = document.getElementById('currentTrackTitle');
+            const trackSub = document.getElementById('currentTrackSub');
+            const downloadBtn = document.getElementById('downloadAudioBtn');
+
+            if (trackTitle) trackTitle.textContent = title || 'Lagu AI';
+            if (trackSub) trackSub.textContent = subtitle || 'Hasil Generasi AI';
+            if (downloadBtn) downloadBtn.classList.remove('opacity-50', 'pointer-events-none');
+
+            if (!player) return;
+
+            player.pause();
+            player.removeAttribute('src');
+            player.currentTime = 0;
+            player.muted = false;
+            player.volume = 1.0;
+            player.preload = "auto";
+
+            try {
+                player.src = audioUrl;
+                player.load();
+                await player.play();
+                appState.isPlaying = true;
+                updatePlayButtonUI(true);
+                showToast("Memutar: " + (title || "Lagu AI"), "info");
+            } catch (err) {
+                console.warn("Autoplay notice:", err.message);
+                appState.isPlaying = false;
+                updatePlayButtonUI(false);
+                showToast("Lagu AI siap! Klik tombol Play untuk mendengarkan.", "info");
+            }
+        }
+
+        function handleAudioError(e) {
+            console.warn("Audio element error:", e);
+            appState.isPlaying = false;
+            updatePlayButtonUI(false);
+        }
+
+        function togglePlayAudio() {
+            const player = document.getElementById('mainAudioPlayer');
+            if (!player || !player.src) {
+                showToast('Belum ada audio yang dimuat!', 'error');
+                return;
+            }
+
+            if (appState.isPlaying) {
+                player.pause();
+                appState.isPlaying = false;
+                updatePlayButtonUI(false);
+            } else {
+                player.muted = false;
+                player.volume = 1.0;
+                player.play().then(() => {
+                    appState.isPlaying = true;
+                    updatePlayButtonUI(true);
+                }).catch(err => {
+                    console.warn("Play error:", err);
+                    showToast("Gagal memutar audio.", "error");
+                });
+            }
+        }
+
+        function updatePlayButtonUI(isPlaying) {
+            const playIcon = document.getElementById('playIcon');
+            const bars = document.querySelectorAll('#equalizerVisualizer .bar');
+
+            if (playIcon) {
+                playIcon.className = isPlaying ? "fa-solid fa-pause text-base" : "fa-solid fa-play ml-0.5 text-base";
+            }
+
+            bars.forEach(bar => {
+                if (isPlaying) {
+                    bar.classList.add('animate-bar-wave');
+                } else {
+                    bar.classList.remove('animate-bar-wave');
+                }
+            });
+        }
+
+        function seekAudio(val) {
+            const player = document.getElementById('mainAudioPlayer');
+            if (player && player.duration) {
+                player.currentTime = (val / 100) * player.duration;
+            }
+        }
+
+        function updateAudioProgress() {
+            const player = document.getElementById('mainAudioPlayer');
+            const seekbar = document.getElementById('audioSeekbar');
+            const currentTimeText = document.getElementById('currentTimeText');
+
+            if (player && player.duration) {
+                const pct = (player.currentTime / player.duration) * 100;
+                if (seekbar) seekbar.value = pct;
+
+                const curMins = Math.floor(player.currentTime / 60);
+                const curSecs = Math.floor(player.currentTime % 60);
+                if (currentTimeText) {
+                    currentTimeText.textContent = `${String(curMins).padStart(2, '0')}:${String(curSecs).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        function updateAudioMetadata() {
+            const player = document.getElementById('mainAudioPlayer');
+            const durationTimeText = document.getElementById('durationTimeText');
+
+            if (player && player.duration) {
+                const durMins = Math.floor(player.duration / 60);
+                const durSecs = Math.floor(player.duration % 60);
+                if (durationTimeText) {
+                    durationTimeText.textContent = `${String(durMins).padStart(2, '0')}:${String(durSecs).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        function onAudioEnded() {
+            appState.isPlaying = false;
+            updatePlayButtonUI(false);
+            const seekbar = document.getElementById('audioSeekbar');
+            if (seekbar) seekbar.value = 0;
+        }
+
+        function toggleMuteAudio() {
+            const player = document.getElementById('mainAudioPlayer');
+            const muteIcon = document.getElementById('muteIcon');
+            if (!player) return;
+
+            player.muted = !player.muted;
+            if (muteIcon) {
+                muteIcon.className = player.muted ? "fa-solid fa-volume-xmark text-rose-400" : "fa-solid fa-volume-high";
+            }
+        }
+
+        function adjustVolume(val) {
+            const player = document.getElementById('mainAudioPlayer');
+            if (player) {
+                player.volume = val;
+            }
+        }
+
+        async function downloadMP3File(audioUrl, filename) {
+            const downloadBtn = document.getElementById('downloadAudioBtn');
+            const originalText = downloadBtn ? downloadBtn.innerHTML : '';
+            
+            if (downloadBtn) {
+                downloadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Mengunduh MP3...</span>`;
+                downloadBtn.classList.add('pointer-events-none', 'opacity-80');
+            }
+
+            const cleanFilename = (filename || 'Lagu_AI_' + Date.now()).replace(/[^a-zA-Z0-9_\-]/g, '_');
+
+            try {
+                const response = await fetch(audioUrl);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = `${cleanFilename}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                showToast('File MP3 berhasil diunduh!', 'success');
+            } catch (err) {
+                console.warn('Blob fetch download fallback:', err.message);
+                const a = document.createElement('a');
+                a.href = audioUrl;
+                a.target = '_blank';
+                a.download = `${cleanFilename}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast('Membuka tautan unduhan langsung...', 'info');
+            } finally {
+                if (downloadBtn) {
+                    downloadBtn.innerHTML = originalText || `<i class="fa-solid fa-download"></i><span>Download Lagu (.MP3)</span>`;
+                    downloadBtn.classList.remove('pointer-events-none', 'opacity-80');
+                }
+            }
+        }
+
+        function handleDownloadClick() {
+            if (!window.currentAudioUrl) {
+                showToast('Belum ada lagu yang dapat diunduh!', 'error');
+                return;
+            }
+            downloadMP3File(window.currentAudioUrl, window.currentAudioTitle || 'Lagu_AI');
+        }
+
+        function saveSongToHistory(songData) {
+            try {
+                const historyJson = localStorage.getItem('ai_music_history');
+                let history = historyJson ? JSON.parse(historyJson) : [];
+                history.unshift(songData);
+                if (history.length > 30) history = history.slice(0, 30);
+                localStorage.setItem('ai_music_history', JSON.stringify(history));
+                renderMusicHistory();
+            } catch (e) {
+                console.error("Failed to save history:", e);
+            }
+        }
+
+        function renderMusicHistory() {
+            const historyList = document.getElementById('historyTrackList');
+            if (!historyList) return;
+
+            try {
+                const historyJson = localStorage.getItem('ai_music_history');
+                const history = historyJson ? JSON.parse(historyJson) : [];
+
+                if (history.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="sm:col-span-2 text-center py-8 text-slate-500 text-xs">
+                            Belum ada lagu yang disimpan. Lagu yang berhasil di-generate akan tersimpan secara otomatis di sini.
+                        </div>
+                    `;
+                    return;
+                }
+
+                historyList.innerHTML = history.map(track => {
+                    return `
+                        <div class="bg-charcoal-950/70 border border-charcoal-800 hover:border-violet-500/40 rounded-xl p-3.5 flex flex-col justify-between gap-3 transition-all duration-200 hover:shadow-lg hover:shadow-violet-950/30 group">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-center gap-3 overflow-hidden">
+                                    <div class="w-10 h-10 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center shrink-0 group-hover:bg-violet-600 group-hover:text-white text-violet-400 transition-all">
+                                        <i class="fa-solid fa-compact-disc"></i>
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <h4 class="text-xs font-bold text-white truncate">${track.title || 'Lagu AI'}</h4>
+                                        <p class="text-[11px] text-slate-400 truncate">${track.genre} • ${track.mood}</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono text-slate-500 shrink-0">${track.date}</span>
+                            </div>
+
+                            <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-charcoal-800/80">
+                                <button onclick="playHistorySong('${track.id}')" class="px-2.5 py-1.5 rounded-lg bg-violet-600/20 hover:bg-violet-600 text-violet-300 hover:text-white text-[11px] font-medium transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-play text-[10px]"></i>
+                                    <span>Putar</span>
+                                </button>
+                                <button onclick="downloadHistorySong('${track.id}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/40 hover:bg-emerald-600 text-emerald-300 hover:text-white text-[11px] font-medium transition-all flex items-center gap-1 border border-emerald-800/40">
+                                    <i class="fa-solid fa-download text-[10px]"></i>
+                                    <span>Download</span>
+                                </button>
+                                <button onclick="deleteHistorySong('${track.id}')" class="p-1.5 rounded-lg bg-charcoal-900 hover:bg-rose-900/60 text-slate-400 hover:text-rose-300 text-[11px] transition-all" title="Hapus Lagu">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error("Error rendering history:", e);
+            }
+        }
+
+        function playHistorySong(id) {
+            try {
+                const historyJson = localStorage.getItem('ai_music_history');
+                const history = historyJson ? JSON.parse(historyJson) : [];
+                const track = history.find(item => String(item.id) === String(id));
+                
+                if (track && track.audioUrl) {
+                    initCustomAudioPlayer(track.audioUrl, track.title, `${track.genre} • ${track.mood}`);
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                    showToast(`Memutar: ${track.title}`, 'info');
+                } else {
+                    showToast('Lagu tidak ditemukan atau URL audio tidak valid.', 'error');
+                }
+            } catch (e) {
+                console.error("Error playing history song:", e);
+            }
+        }
+
+        function downloadHistorySong(id) {
+            try {
+                const historyJson = localStorage.getItem('ai_music_history');
+                const history = historyJson ? JSON.parse(historyJson) : [];
+                const track = history.find(item => String(item.id) === String(id));
+
+                if (track && track.audioUrl) {
+                    downloadMP3File(track.audioUrl, track.title || 'Lagu_AI');
+                } else {
+                    showToast('Lagu tidak ditemukan.', 'error');
+                }
+            } catch (e) {
+                console.error("Error downloading history song:", e);
+            }
+        }
+
+        function deleteHistorySong(id) {
+            try {
+                const historyJson = localStorage.getItem('ai_music_history');
+                let history = historyJson ? JSON.parse(historyJson) : [];
+                history = history.filter(item => String(item.id) !== String(id));
+                localStorage.setItem('ai_music_history', JSON.stringify(history));
+                renderMusicHistory();
+                showToast('Lagu berhasil dihapus dari riwayat.', 'info');
+            } catch (e) {
+                console.error("Error deleting history song:", e);
+            }
+        }
+
+        function openConfirmClearModal() {
+            toggleModal('confirmClearModal', true);
+        }
+
+        function clearAllHistory() {
+            localStorage.removeItem('ai_music_history');
+            renderMusicHistory();
+            toggleModal('confirmClearModal', false);
+            showToast('Seluruh riwayat lagu berhasil dihapus.', 'info');
+        }
+
+        window.onload = function() {
+            const savedOpenRouterKey = localStorage.getItem('aisc_openrouter_key');
+            const savedApiframeKey = localStorage.getItem('aisc_apiframe_key');
+            const savedKieaiKey = localStorage.getItem('aisc_kieai_key');
+            const savedActiveMusicProv = localStorage.getItem('aisc_active_music_provider');
+            const savedAutoSwitch = localStorage.getItem('aisc_autoswitch');
+
+            if (savedOpenRouterKey) {
+                appState.providers.openrouter.apiKey = savedOpenRouterKey;
+                const openrouterKeyInput = document.getElementById('openrouterKeyInput');
+                if (openrouterKeyInput) openrouterKeyInput.value = savedOpenRouterKey;
+            }
+
+            if (savedApiframeKey) {
+                appState.providers.apiframe.apiKey = savedApiframeKey;
+                const apiframeKeyInput = document.getElementById('apiframeKeyInput');
+                if (apiframeKeyInput) apiframeKeyInput.value = savedApiframeKey;
+            }
+
+            if (savedKieaiKey) {
+                appState.providers.kieai.apiKey = savedKieaiKey;
+                const kieaiKeyInput = document.getElementById('kieaiKeyInput');
+                if (kieaiKeyInput) kieaiKeyInput.value = savedKieaiKey;
+            }
+
+            if (savedActiveMusicProv) {
+                appState.activeMusicProvider = savedActiveMusicProv;
+                const activeProvSelect = document.getElementById('activeMusicProviderSelect');
+                if (activeProvSelect) activeProvSelect.value = savedActiveMusicProv;
+            }
+
+            if (savedAutoSwitch !== null) {
+                appState.autoSwitchOnOutOfCredits = savedAutoSwitch === 'true';
+                const autoSwitchToggle = document.getElementById('autoSwitchToggle');
+                if (autoSwitchToggle) autoSwitchToggle.checked = appState.autoSwitchOnOutOfCredits;
+            }
+
+            populateCountryDropdowns();
+            renderMusicHistory();
+            updateHeaderBadges();
+
+            if (appState.providers.openrouter.apiKey) checkProviderCredits('openrouter');
+            if (appState.providers.apiframe.apiKey) checkProviderCredits('apiframe');
+            if (appState.providers.kieai.apiKey) checkProviderCredits('kieai');
+
+            const lyricOutput = document.getElementById('lyricOutput');
+            if (lyricOutput) {
+                lyricOutput.addEventListener('input', () => {
+                    const charCount = document.getElementById('charCount');
+                    if (charCount) charCount.textContent = `${lyricOutput.value.length} Karakter`;
+                });
+            }
+        };
+    </script>
+</body>
+</html>
