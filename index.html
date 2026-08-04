@@ -1531,7 +1531,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             if (activePollingInterval) clearInterval(activePollingInterval);
 
             let secondsElapsed = 0;
-            const maxSeconds = 240; // 4 Minutes Max Timeout
+            const maxSeconds = 360; // 6 Minutes Max Timeout (lagu custom dengan lirik panjang bisa butuh lebih dari 4 menit)
 
             const activeProvKey = provider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
             const apiKey = appState.providers[activeProvKey].apiKey;
@@ -1561,7 +1561,12 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                             const statusStr = (resData.status || resData.data?.status || '').toUpperCase();
 
                             if (statusStr === 'COMPLETED' || statusStr === 'SUCCESS') {
-                                const audioUrl = resData.result?.tracks?.[0]?.audioUrl || resData.tracks?.[0]?.audioUrl;
+                                const audioUrl = resData.result?.tracks?.[0]?.audioUrl ||
+                                                 resData.tracks?.[0]?.audioUrl ||
+                                                 resData.result?.audioUrl ||
+                                                 resData.result?.url ||
+                                                 resData.data?.tracks?.[0]?.audioUrl ||
+                                                 resData.data?.result?.tracks?.[0]?.audioUrl;
                                 if (audioUrl) {
                                     clearInterval(activePollingInterval);
                                     activePollingInterval = null;
@@ -1571,11 +1576,19 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                                         lyrics: document.getElementById('musicLyrics')?.value
                                     });
                                     return;
+                                } else {
+                                    // Status sudah selesai tapi field audio tidak dikenali -- hentikan polling, jangan tunggu sampai timeout
+                                    clearInterval(activePollingInterval);
+                                    activePollingInterval = null;
+                                    console.warn("Apiframe COMPLETED tapi audioUrl tidak ditemukan. Response penuh:", resData);
+                                    finalizeMusicError("Apiframe menyatakan lagu selesai, tapi format response audio tidak dikenali. Cek console (F12) untuk detail response lengkapnya.");
+                                    return;
                                 }
-                            } else if (statusStr === 'FAILED' || statusStr === 'ERROR') {
+                            } else if (statusStr.includes('FAIL') || statusStr.includes('ERROR')) {
                                 clearInterval(activePollingInterval);
                                 activePollingInterval = null;
-                                finalizeMusicError(`Generasi musik gagal: ${resData.message || 'Status FAILED'}`);
+                                const errMsg = resData.error || resData.message || resData.data?.error || `Status: ${statusStr}`;
+                                finalizeMusicError(`Generasi musik gagal (Apiframe.ai): ${errMsg}`);
                                 return;
                             }
                         }
@@ -1601,11 +1614,28 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                                         lyrics: document.getElementById('musicLyrics')?.value
                                     });
                                     return;
+                                } else {
+                                    // Status sudah SUCCESS tapi audio belum ditemukan di field yang diketahui -- hentikan, jangan tunggu timeout
+                                    clearInterval(activePollingInterval);
+                                    activePollingInterval = null;
+                                    console.warn("Kie.ai SUCCESS tapi audioUrl tidak ditemukan. Response penuh:", resData);
+                                    finalizeMusicError("Kie.ai menyatakan lagu selesai, tapi format response audio tidak dikenali. Cek console (F12) untuk detail response lengkapnya.");
+                                    return;
                                 }
-                            } else if (statusStr === 'FAILED' || statusStr === 'ERROR' || resData.code === 500) {
+                            } else if (statusStr.includes('FAIL') || statusStr.includes('ERROR') || statusStr.includes('EXCEPTION') || resData.code === 500 || resData.code === 501) {
                                 clearInterval(activePollingInterval);
                                 activePollingInterval = null;
-                                finalizeMusicError(`Generasi musik gagal: ${resData.msg || 'Status FAILED'}`);
+                                const errMsg = resData.data?.errorMessage || resData.msg || resData.message || `Status: ${statusStr || resData.code}`;
+                                finalizeMusicError(`Generasi musik gagal (Kie.ai): ${errMsg}`);
+                                return;
+                            }
+                        } else {
+                            // HTTP error (bukan network error) saat polling -- misal 404 taskId tidak ditemukan
+                            const errBody = await res.json().catch(() => ({}));
+                            if (res.status === 404 || res.status === 400) {
+                                clearInterval(activePollingInterval);
+                                activePollingInterval = null;
+                                finalizeMusicError(`Kie.ai tidak menemukan tugas ini (taskId tidak valid): ${errBody.msg || res.status}`);
                                 return;
                             }
                         }
