@@ -1531,7 +1531,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             if (activePollingInterval) clearInterval(activePollingInterval);
 
             let secondsElapsed = 0;
-            const maxSeconds = 360; // 6 Minutes Max Timeout (lagu custom dengan lirik panjang bisa butuh lebih dari 4 menit)
+            const maxSeconds = 480; // 8 Menit Max Timeout (status TEXT_SUCCESS -> SUCCESS di Kie.ai kadang butuh waktu cukup lama)
 
             const activeProvKey = provider === 'Apiframe.ai' ? 'apiframe' : 'kieai';
             const apiKey = appState.providers[activeProvKey].apiKey;
@@ -1539,6 +1539,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             const progressBar = document.getElementById('progressBar');
             const progressPercent = document.getElementById('progressPercent');
             const progressStepText = document.getElementById('progressStepText');
+            let lastKnownStreamUrl = null;
 
             activePollingInterval = setInterval(async () => {
                 secondsElapsed += 3;
@@ -1602,6 +1603,18 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                             const resData = await res.json();
                             const statusStr = (resData.data?.status || resData.status || '').toUpperCase();
 
+                            if (statusStr === 'TEXT_SUCCESS' || statusStr === 'FIRST_SUCCESS' || statusStr === 'PENDING') {
+                                const previewStreamUrl = resData.data?.response?.sunoData?.[0]?.streamAudioUrl ||
+                                                          resData.data?.response?.sunoData?.[0]?.sourceStreamAudioUrl;
+                                if (previewStreamUrl) lastKnownStreamUrl = previewStreamUrl;
+
+                                if (progressStepText) {
+                                    progressStepText.textContent = statusStr === 'PENDING'
+                                        ? `Menunggu antrian server Kie.ai... (${secondsElapsed} dtk)`
+                                        : `Lirik & metadata selesai, sedang merender audio final... (${secondsElapsed} dtk)`;
+                                }
+                            }
+
                             if (statusStr === 'SUCCESS' || statusStr === 'COMPLETED') {
                                 const audioUrl = resData.data?.response?.sunoData?.[0]?.audioUrl || 
                                                  resData.response?.sunoData?.[0]?.audioUrl;
@@ -1615,7 +1628,19 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                                     });
                                     return;
                                 } else {
-                                    // Status sudah SUCCESS tapi audio belum ditemukan di field yang diketahui -- hentikan, jangan tunggu timeout
+                                    // Status SUCCESS tapi audioUrl masih kosong -- coba pakai streamAudioUrl sebagai cadangan
+                                    const streamUrl = resData.data?.response?.sunoData?.[0]?.streamAudioUrl ||
+                                                       resData.data?.response?.sunoData?.[0]?.sourceStreamAudioUrl;
+                                    if (streamUrl) {
+                                        clearInterval(activePollingInterval);
+                                        activePollingInterval = null;
+                                        finalizeMusicSuccess(streamUrl, title, subtitle, {
+                                            genre: document.getElementById('musicGenre')?.value,
+                                            mood: document.getElementById('musicMood')?.value,
+                                            lyrics: document.getElementById('musicLyrics')?.value
+                                        });
+                                        return;
+                                    }
                                     clearInterval(activePollingInterval);
                                     activePollingInterval = null;
                                     console.warn("Kie.ai SUCCESS tapi audioUrl tidak ditemukan. Response penuh:", resData);
@@ -1648,7 +1673,18 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 if (secondsElapsed >= maxSeconds) {
                     clearInterval(activePollingInterval);
                     activePollingInterval = null;
-                    finalizeMusicError("Waktu generasi lagu habis (Timeout 4 menit). Silakan coba lagi.");
+
+                    if (lastKnownStreamUrl) {
+                        // Audio final belum siap, tapi ada versi stream yang sudah bisa diputar/didownload -- pakai itu daripada gagal total
+                        showToast('Audio final belum selesai dirender, memakai versi stream yang sudah tersedia.', 'info');
+                        finalizeMusicSuccess(lastKnownStreamUrl, title, subtitle, {
+                            genre: document.getElementById('musicGenre')?.value,
+                            mood: document.getElementById('musicMood')?.value,
+                            lyrics: document.getElementById('musicLyrics')?.value
+                        });
+                    } else {
+                        finalizeMusicError(`Waktu generasi lagu habis (Timeout ${Math.round(maxSeconds / 60)} menit). Silakan coba lagi.`);
+                    }
                 }
             }, 3000);
         }
