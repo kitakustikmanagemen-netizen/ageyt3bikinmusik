@@ -1,56 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="dark h-full">
 <head>
-<style id="andriage-gate-style">
-  html, body { visibility: hidden !important; }
-</style>
-<script>
-(function(){
-  var TOOL_SLUG = "musik"; // <-- WAJIB DIGANTI
-
-  var API_BASE  = "https://api.andriage.my.id";
-  var LOGIN_URL = "https://login.andriage.my.id/";
-  var ADMIN_URL = "https://hubungi.andriage.my.id/";
-
-  function reveal(){
-    var s = document.getElementById("andriage-gate-style");
-    if (s) s.remove();
-  }
-
-  function block(message, buttonText, buttonUrl){
-    document.documentElement.innerHTML =
-      '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;' +
-      'background:#0F1117;color:#F3F0FA;font-family:system-ui,-apple-system,sans-serif;' +
-      'padding:24px;text-align:center;">' +
-        '<div style="max-width:420px;">' +
-          '<div style="font-size:42px;margin-bottom:16px;">🔒</div>' +
-          '<h1 style="font-size:19px;font-weight:700;margin:0 0 10px;line-height:1.4;">' + message + '</h1>' +
-          '<a href="' + buttonUrl + '" style="display:inline-block;margin-top:14px;padding:12px 24px;' +
-          'border-radius:10px;background:#FF2E9A;color:#fff;text-decoration:none;font-weight:600;' +
-          'font-size:14px;">' + buttonText + '</a>' +
-        '</div>' +
-      '</div>';
-    document.documentElement.style.visibility = "visible";
-  }
-
-  fetch(API_BASE + "/check-access?tool=" + TOOL_SLUG, { credentials: "include" })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if (data.access) {
-        reveal();
-      } else if (data.reason === "not_logged_in") {
-        block("Kamu perlu masuk ke akun dulu untuk memakai tool ini.", "Masuk ke Akun", LOGIN_URL);
-      } else {
-        block("Tool ini belum bisa kamu akses. Hubungi admin untuk mendapatkan akses.", "Hubungi Admin", ADMIN_URL);
-      }
-    })
-    .catch(function(){
-      block("Gagal memeriksa akses. Coba muat ulang halaman.", "Muat Ulang", location.href);
-    });
-})();
-</script>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGE YT#3 Bikin Musik - Studio Pembuat Musik & Lirik AI</title>
@@ -446,7 +396,7 @@
                             <select id="vocalGender" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-violet-500">
                                 <option value="m">Vokal Pria (Male)</option>
                                 <option value="f">Vokal Wanita (Female)</option>
-                                <option value="">Duet / Netral</option>
+                                <option value="duet">Duet (Pria & Wanita)</option>
                             </select>
                         </div>
                         <div>
@@ -1382,9 +1332,28 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             const cleanTitle = (params.title || "Lagu AI").trim().substring(0, 80);
             const cleanLyrics = (params.lyrics || "").trim().substring(0, 5000);
             const isInstrumental = Boolean(params.isInstrumental);
-            const styleString = `${params.genre}, ${params.mood}`;
+            const isDuet = params.vocal === 'duet';
+            // Untuk mode duet, tambahkan instruksi eksplisit di style supaya Suno benar-benar
+            // mengatur dua vokalis (pria & wanita), karena field vocal_gender/vocalGender
+            // hanya menerima satu nilai (m/f) dan tidak punya opsi duet resmi.
+            const styleString = isDuet
+                ? `${params.genre}, ${params.mood}, duet, male and female vocals, alternating verses between male and female singer`
+                : `${params.genre}, ${params.mood}`;
 
             if (provider === 'Apiframe.ai') {
+                const sunoParams = {
+                    custom_mode: true,
+                    title: cleanTitle,
+                    style: styleString,
+                    instrumental: isInstrumental,
+                    model_version: params.modelVersion || "V5_5"
+                };
+                // Field vocal_gender HANYA dikirim kalau bukan instrumental dan bukan duet.
+                // Untuk duet, sengaja TIDAK dikirim sama sekali supaya Suno tidak dipaksa satu suara.
+                if (!isInstrumental && !isDuet) {
+                    sunoParams.vocal_gender = params.vocal || "m";
+                }
+
                 const res = await fetch('https://green-sea-0373.kitakustik-managemen.workers.dev/v2/music/generate', {
                     method: 'POST',
                     headers: {
@@ -1394,14 +1363,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                     body: JSON.stringify({
                         prompt: cleanLyrics,
                         model: "suno",
-                        sunoParams: {
-                            custom_mode: true,
-                            title: cleanTitle,
-                            style: styleString,
-                            vocal_gender: isInstrumental ? "" : (params.vocal || "m"),
-                            instrumental: isInstrumental,
-                            model_version: params.modelVersion || "V5_5"
-                        }
+                        sunoParams: sunoParams
                     })
                 });
 
@@ -1425,22 +1387,27 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 return jobId;
 
             } else if (provider === 'Kie.ai') {
+                const kiePayload = {
+                    prompt: cleanLyrics,
+                    customMode: true,
+                    instrumental: isInstrumental,
+                    model: params.modelVersion || "V5_5",
+                    style: styleString,
+                    title: cleanTitle,
+                    callBackUrl: "https://example.com/callback"
+                };
+                // Sama seperti Apiframe: vocalGender cuma dikirim kalau bukan instrumental & bukan duet.
+                if (!isInstrumental && !isDuet) {
+                    kiePayload.vocalGender = params.vocal || "m";
+                }
+
                 const res = await fetch('https://api.kie.ai/api/v1/generate', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + apiKey,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        prompt: cleanLyrics,
-                        customMode: true,
-                        instrumental: isInstrumental,
-                        model: params.modelVersion || "V5_5",
-                        style: styleString,
-                        title: cleanTitle,
-                        vocalGender: isInstrumental ? "" : (params.vocal || "m"),
-                        callBackUrl: "https://example.com/callback"
-                    })
+                    body: JSON.stringify(kiePayload)
                 });
 
                 const data = await res.json().catch(() => ({}));
@@ -1501,7 +1468,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             const title = titleInput?.value.trim() || 'Lagu AI ' + new Date().toLocaleTimeString('id-ID');
             const genre = genreSelect?.value || 'Pop / Modern Pop';
             const mood = moodSelect?.value || 'Ceria / Happy / Upbeat';
-            const vocal = vocalSelect?.value || 'm';
+            const vocal = vocalSelect?.value ?? 'm';
             const modelVersion = modelSelect?.value || 'V5_5';
 
             if (generateBtn) {
