@@ -399,6 +399,12 @@
                                 <option value="duet">Duet (Pria & Wanita)</option>
                                 <option value="child_m">Anak Laki-laki (Boy)</option>
                                 <option value="child_f">Anak Perempuan (Girl)</option>
+                                <option value="duet_child">Duet Anak-anak (Laki & Perempuan)</option>
+                                <option value="raspy">Vokal Serak (Raspy)</option>
+                                <option value="opera">Vokal Opera (Operatic)</option>
+                                <option value="falsetto">Vokal Falsetto (Tinggi Melengking)</option>
+                                <option value="deep">Vokal Berat (Deep/Bass)</option>
+                                <option value="whisper">Vokal Berbisik (Whisper)</option>
                             </select>
                         </div>
                         <div>
@@ -1341,7 +1347,13 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             const specialVocalStyleHints = {
                 duet: 'duet, male and female vocals, alternating verses between male and female singer',
                 child_m: 'child voice, young boy singer, children\'s choir style, innocent youthful male vocal',
-                child_f: 'child voice, young girl singer, children\'s choir style, innocent youthful female vocal'
+                child_f: 'child voice, young girl singer, children\'s choir style, innocent youthful female vocal',
+                duet_child: 'duet, two child voices, young boy and young girl singing together, alternating verses, children\'s choir style, innocent youthful vocals',
+                raspy: 'raspy vocal, husky voice, gritty smoky vocal texture',
+                opera: 'operatic vocal, classical opera singing style, powerful vibrato, trained opera singer',
+                falsetto: 'falsetto vocal, high-pitched airy voice, soft falsetto singing style',
+                deep: 'deep vocal, bass voice, low pitched powerful vocal',
+                whisper: 'whispery vocal, soft breathy voice, intimate whisper singing style'
             };
             const specialHint = specialVocalStyleHints[params.vocal] || null;
             const styleString = specialHint
