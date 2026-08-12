@@ -397,6 +397,8 @@
                                 <option value="m">Vokal Pria (Male)</option>
                                 <option value="f">Vokal Wanita (Female)</option>
                                 <option value="duet">Duet (Pria & Wanita)</option>
+                                <option value="child_m">Anak Laki-laki (Boy)</option>
+                                <option value="child_f">Anak Perempuan (Girl)</option>
                             </select>
                         </div>
                         <div>
@@ -1332,13 +1334,23 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             const cleanTitle = (params.title || "Lagu AI").trim().substring(0, 80);
             const cleanLyrics = (params.lyrics || "").trim().substring(0, 5000);
             const isInstrumental = Boolean(params.isInstrumental);
-            const isDuet = params.vocal === 'duet';
-            // Untuk mode duet, tambahkan instruksi eksplisit di style supaya Suno benar-benar
-            // mengatur dua vokalis (pria & wanita), karena field vocal_gender/vocalGender
-            // hanya menerima satu nilai (m/f) dan tidak punya opsi duet resmi.
-            const styleString = isDuet
-                ? `${params.genre}, ${params.mood}, duet, male and female vocals, alternating verses between male and female singer`
+
+            // Karakter vokal yang TIDAK bisa direpresentasikan lewat parameter vocal_gender/vocalGender
+            // biasa (yang cuma menerima "m" atau "f") -- untuk ini kita pandu lewat instruksi eksplisit
+            // di field "style", karena itu cara Suno benar-benar mengerti karakter vokal khusus.
+            const specialVocalStyleHints = {
+                duet: 'duet, male and female vocals, alternating verses between male and female singer',
+                child_m: 'child voice, young boy singer, children\'s choir style, innocent youthful male vocal',
+                child_f: 'child voice, young girl singer, children\'s choir style, innocent youthful female vocal'
+            };
+            const specialHint = specialVocalStyleHints[params.vocal] || null;
+            const styleString = specialHint
+                ? `${params.genre}, ${params.mood}, ${specialHint}`
                 : `${params.genre}, ${params.mood}`;
+
+            // vocal_gender/vocalGender HANYA dikirim untuk pilihan "m"/"f" polos.
+            // Untuk duet & suara anak, field ini sengaja TIDAK dikirim -- style di atas yang mengarahkan.
+            const shouldSendGenderField = !isInstrumental && (params.vocal === 'm' || params.vocal === 'f');
 
             if (provider === 'Apiframe.ai') {
                 const sunoParams = {
@@ -1348,10 +1360,8 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                     instrumental: isInstrumental,
                     model_version: params.modelVersion || "V5_5"
                 };
-                // Field vocal_gender HANYA dikirim kalau bukan instrumental dan bukan duet.
-                // Untuk duet, sengaja TIDAK dikirim sama sekali supaya Suno tidak dipaksa satu suara.
-                if (!isInstrumental && !isDuet) {
-                    sunoParams.vocal_gender = params.vocal || "m";
+                if (shouldSendGenderField) {
+                    sunoParams.vocal_gender = params.vocal;
                 }
 
                 const res = await fetch('https://green-sea-0373.kitakustik-managemen.workers.dev/v2/music/generate', {
@@ -1396,9 +1406,9 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                     title: cleanTitle,
                     callBackUrl: "https://example.com/callback"
                 };
-                // Sama seperti Apiframe: vocalGender cuma dikirim kalau bukan instrumental & bukan duet.
-                if (!isInstrumental && !isDuet) {
-                    kiePayload.vocalGender = params.vocal || "m";
+                // Sama seperti Apiframe: vocalGender cuma dikirim untuk pilihan "m"/"f" polos.
+                if (shouldSendGenderField) {
+                    kiePayload.vocalGender = params.vocal;
                 }
 
                 const res = await fetch('https://api.kie.ai/api/v1/generate', {
