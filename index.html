@@ -1383,8 +1383,8 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 throw new Error(`API Key untuk ${provider} belum diset! Silakan atur di Pengaturan API.`);
             }
 
+            const rawLyrics = (params.lyrics || "").trim().substring(0, 4600);
             const cleanTitle = (params.title || "Lagu AI").trim().substring(0, 80);
-            const cleanLyrics = (params.lyrics || "").trim().substring(0, 5000);
             const isInstrumental = Boolean(params.isInstrumental);
 
             // Karakter vokal yang TIDAK bisa direpresentasikan lewat parameter vocal_gender/vocalGender
@@ -1394,7 +1394,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 duet: 'duet, male and female vocals, alternating verses between male and female singer',
                 child_m: 'child voice, young boy singer, children\'s choir style, innocent youthful male vocal',
                 child_f: 'child voice, young girl singer, children\'s choir style, innocent youthful female vocal',
-                duet_child: 'duet, two child voices, young boy and young girl singing together, alternating verses, children\'s choir style, innocent youthful vocals',
+                duet_child: 'duet, two distinct child voices, one young boy singer and one young girl singer, alternating between them by section, children\'s choir style',
                 raspy: 'raspy vocal, husky voice, gritty smoky vocal texture',
                 opera: 'operatic vocal, classical opera singing style, powerful vibrato, trained opera singer',
                 falsetto: 'falsetto vocal, high-pitched airy voice, soft falsetto singing style',
@@ -1402,9 +1402,37 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 whisper: 'whispery vocal, soft breathy voice, intimate whisper singing style'
             };
             const specialHint = specialVocalStyleHints[params.vocal] || null;
+            // PENTING: specialHint ditaruh SEGERA setelah genre (bukan di akhir) supaya kalaupun
+            // field style kena batas panjang dari Suno, instruksi vokal khusus ini tidak ikut terpotong.
             const styleString = specialHint
-                ? `${params.genre}, ${params.mood}, ${specialHint}`
+                ? `${params.genre}, ${specialHint}, ${params.mood}`
                 : `${params.genre}, ${params.mood}`;
+
+            // Untuk mode duet (baik dewasa maupun anak-anak), tandai LANGSUNG di teks lirik per
+            // bagian ([Verse 1], [Chorus], dst) siapa yang bernyanyi di situ. Ini kunci utama supaya
+            // Suno benar-benar mengatur dua suara berbeda bergantian, bukan cuma andalkan style tag
+            // yang sinyalnya jauh lebih lemah.
+            function injectVocalSectionTags(lyricsText, vocalType) {
+                if (vocalType !== 'duet' && vocalType !== 'duet_child') return lyricsText;
+
+                const voiceA = vocalType === 'duet_child' ? 'Boy Vocal' : 'Male Vocal';
+                const voiceB = vocalType === 'duet_child' ? 'Girl Vocal' : 'Female Vocal';
+                let sectionIndex = 0;
+
+                return lyricsText.replace(/\[([^\]]+)\]/g, (match, tagContent) => {
+                    const lower = tagContent.toLowerCase();
+                    // Bagian Chorus/Outro biasanya dinyanyikan bersama (harmoni dua suara),
+                    // bukan solo bergantian, supaya terasa seperti duet sungguhan.
+                    if (lower.includes('chorus') || lower.includes('outro')) {
+                        return `[${tagContent} - Both ${voiceA} and ${voiceB} together]`;
+                    }
+                    const chosenVoice = sectionIndex % 2 === 0 ? voiceA : voiceB;
+                    sectionIndex++;
+                    return `[${tagContent} - ${chosenVoice}]`;
+                });
+            }
+
+            const cleanLyrics = injectVocalSectionTags(rawLyrics, params.vocal).substring(0, 5000);
 
             // vocal_gender/vocalGender HANYA dikirim untuk pilihan "m"/"f" polos.
             // Untuk duet & suara anak, field ini sengaja TIDAK dikirim -- style di atas yang mengarahkan.
