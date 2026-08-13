@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGE YT#3 Bikin Musik - Studio Pembuat Musik & Lirik AI</title>
+    <meta name="description" content="AGE YT#3 Bikin Musik — tools AI gratis untuk membuat lirik lagu dan musik MP3 orisinal dari topik, genre, mood, dan karakter vokal pilihan Anda. Mendukung berbagai bahasa, negara, dan gaya musik.">
+
+    <!-- Favicon (inline SVG, tanpa perlu file terpisah) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='55%25' stop-color='%236d28d9'/%3E%3Cstop offset='100%25' stop-color='%23d4af37'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='46' fill='url(%23g)'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%2307090e'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23d4af37'/%3E%3C/svg%3E">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,7 +26,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        heading: ['Outfit', 'sans-serif'],
+                        heading: ['Sora', 'sans-serif'],
                     },
                     colors: {
                         charcoal: {
@@ -45,6 +49,18 @@
                             800: '#5b21b6',
                             900: '#4c1d95',
                             950: '#2e1065',
+                        },
+                        gold: {
+                            50: '#fdf9ec',
+                            100: '#faf0cc',
+                            200: '#f3dd94',
+                            300: '#ecc85c',
+                            400: '#e2b23a',
+                            500: '#d4af37',
+                            600: '#b8912a',
+                            700: '#93701f',
+                            800: '#6e531a',
+                            900: '#4d3a14',
                         }
                     },
                     animation: {
@@ -65,10 +81,24 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #07090e;
+            background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,58,237,0.15), transparent), radial-gradient(ellipse 60% 40% at 100% 0%, rgba(212,175,55,0.06), transparent);
+            background-attachment: fixed;
             color: #f1f5f9;
         }
         .font-heading {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Sora', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        /* Kesan tombol lebih tegas & premium secara global: bobot huruf lebih tebal,
+           sedikit letter-spacing, transisi lebih halus -- tanpa mengubah warna/utility
+           Tailwind yang sudah diatur di masing-masing elemen. */
+        button {
+            font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        button:active {
+            transform: scale(0.97);
         }
         .animate-bar-wave {
             animation: wave 0.8s ease-in-out infinite alternate;
@@ -102,11 +132,11 @@
             
             <!-- Logo & Title -->
             <div class="flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-700 via-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-600/20 border border-violet-500/30">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-800 via-violet-600 to-gold-500 flex items-center justify-center shadow-lg shadow-violet-600/30 border border-gold-500/40">
                     <i class="fa-solid fa-compact-disc text-white text-2xl animate-spin-slow"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-extrabold font-heading bg-gradient-to-r from-white via-slate-100 to-violet-200 bg-clip-text text-transparent tracking-tight">
+                    <h1 class="text-xl sm:text-2xl font-extrabold font-heading bg-gradient-to-r from-white via-violet-100 to-gold-300 bg-clip-text text-transparent tracking-tight">
                         AGE YT#3 Bikin Musik
                     </h1>
                     <p class="text-xs text-slate-400 font-medium">Tools pembuatan Lirik Dan Lagu Baru berbasis AI</p>
@@ -138,7 +168,7 @@
                 </div>
 
                 <!-- API Modal Settings Button -->
-                <button id="openApiModalBtn" onclick="toggleModal('apiModal', true)" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-slate-200 font-medium transition-all duration-200 border border-charcoal-700/80 hover:border-violet-500/50 active:scale-95 shadow-sm">
+                <button id="openApiModalBtn" onclick="toggleModal('apiModal', true)" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-slate-200 font-semibold transition-all duration-200 border border-charcoal-700/80 hover:border-gold-500/50 active:scale-95 shadow-sm">
                     <i class="fa-solid fa-sliders text-violet-400"></i>
                     <span class="hidden sm:inline">Pengaturan API</span>
                 </button>
@@ -151,11 +181,11 @@
         <!-- Navigation Tabs Bar -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-charcoal-800/80 pb-3.5 gap-3">
             <nav class="flex space-x-2 bg-charcoal-900/90 p-1.5 rounded-2xl border border-charcoal-800" aria-label="Tabs">
-                <button id="tabBtnLyric" onclick="switchTab('lyric')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-violet-600 text-white shadow-lg shadow-violet-600/30">
+                <button id="tabBtnLyric" onclick="switchTab('lyric')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-200 bg-gradient-to-r from-violet-700 to-violet-600 text-white shadow-lg shadow-violet-600/40 ring-1 ring-gold-500/30">
                     <i class="fa-solid fa-pen-nib"></i>
                     <span>1. Generator Lirik</span>
                 </button>
-                <button id="tabBtnMusic" onclick="switchTab('music')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-charcoal-800/60">
+                <button id="tabBtnMusic" onclick="switchTab('music')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-200 text-slate-400 hover:text-white hover:bg-charcoal-800/60">
                     <i class="fa-solid fa-music"></i>
                     <span>2. Generator Musik (MP3)</span>
                 </button>
@@ -227,12 +257,7 @@
 
                     <div>
                         <label class="block font-semibold text-slate-300 mb-1.5">Suasana / Mood Lagu</label>
-                        <div class="grid grid-cols-4 gap-2">
-                            <button type="button" onclick="selectMood(this, 'Melankolis')" class="mood-btn active bg-violet-600/30 border-violet-500 text-violet-200 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Melankolis</button>
-                            <button type="button" onclick="selectMood(this, 'Energik')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Energik</button>
-                            <button type="button" onclick="selectMood(this, 'Romantis')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Romantis</button>
-                            <button type="button" onclick="selectMood(this, 'Semangat')" class="mood-btn bg-charcoal-950/60 border-charcoal-800 hover:border-charcoal-700 text-slate-400 py-1.5 px-2 rounded-lg border text-center font-medium transition-all">Semangat</button>
-                        </div>
+                        <select id="lyricMood" onchange="appState.selectedMood = this.value" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all"></select>
                     </div>
 
                     <div>
@@ -259,7 +284,7 @@
                     </div>
                 </div>
 
-                <button id="generateLyricBtn" onclick="handleGenerateLyric()" class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-600/25 flex items-center justify-center gap-2 transition-all active:scale-95">
+                <button id="generateLyricBtn" onclick="handleGenerateLyric()" class="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-violet-700 via-violet-600 to-violet-700 hover:from-violet-600 hover:via-violet-500 hover:to-violet-600 text-white font-bold uppercase tracking-wide text-sm rounded-xl shadow-xl shadow-violet-600/40 ring-1 ring-gold-500/30 flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                     <span>Hasilkan Lirik Lagu</span>
                 </button>
@@ -368,20 +393,7 @@
                     <!-- Song Mood Dropdown -->
                     <div>
                         <label class="block font-semibold text-slate-300 mb-1.5">Suasana / Mood Lagu</label>
-                        <select id="musicMood" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all">
-                            <option value="Ceria / Happy / Upbeat">Ceria / Happy / Upbeat</option>
-                            <option value="Sedih / Galau / Emotional">Sedih / Galau / Emotional</option>
-                            <option value="Semangat / Energik / Motivational">Semangat / Energik / Motivational</option>
-                            <option value="Rileks / Santai / Chill / Peaceful">Rileks / Santai / Chill / Peaceful</option>
-                            <option value="Romantis / Manis / Sweet">Romantis / Manis / Sweet</option>
-                            <option value="Megah / Epik / Cinematic">Megah / Epik / Cinematic</option>
-                            <option value="Misterius / Gelap / Dark">Misterius / Gelap / Dark</option>
-                            <option value="Nostalgia / Retro / Melankolis">Nostalgia / Retro / Melankolis</option>
-                            <option value="Penuh Harapan / Inspiring / Uplifting">Penuh Harapan / Inspiring / Uplifting</option>
-                            <option value="Santai Pesisir / Tropical Vibes">Santai Pesisir / Tropical Vibes</option>
-                            <option value="Pesta / Funky / Party">Pesta / Funky / Party</option>
-                            <option value="Tegang / Intense / Suspenseful">Tegang / Intense / Suspenseful</option>
-                        </select>
+                        <select id="musicMood" class="w-full bg-charcoal-950/80 border border-charcoal-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-violet-500 transition-all"></select>
                     </div>
 
                     <!-- Style & Instrumentation Tags -->
@@ -428,7 +440,7 @@
                 </div>
 
                 <!-- Generate Music Button -->
-                <button id="generateMusicBtn" onclick="handleGenerateMusic()" class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-600/25 flex items-center justify-center gap-2 transition-all active:scale-95">
+                <button id="generateMusicBtn" onclick="handleGenerateMusic()" class="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-violet-700 via-violet-600 to-violet-700 hover:from-violet-600 hover:via-violet-500 hover:to-violet-600 text-white font-bold uppercase tracking-wide text-sm rounded-xl shadow-xl shadow-violet-600/40 ring-1 ring-gold-500/30 flex items-center justify-center gap-2 transition-all active:scale-95">
                     <i class="fa-solid fa-compact-disc"></i>
                     <span>Generate Musik MP3</span>
                 </button>
@@ -705,6 +717,35 @@
           "ru": { name: "Rusia", languages: ["Rusia"], genres: ["Pop Rusia (Estrada)", "Chanson Rusia", "Russian Rock"] }
         };
 
+        // 2. UNIFIED MOOD DATASET -- dipakai SAMA PERSIS oleh Tab Lirik & Tab Musik,
+        // supaya tidak ada dua sistem mood berbeda yang membingungkan. Tiap mood
+        // cuma satu konsep spesifik (bukan gabungan 3 kata), dan punya "directive"
+        // -- instruksi tegas dalam Bahasa Inggris (bahasa yang paling dipahami AI
+        // musik/lirik) supaya hasilnya benar-benar mengikuti mood yang dipilih,
+        // bukan default ke "ceria" seperti sebelumnya.
+        const MOOD_DATA = {
+            ceria:      { label: "Ceria / Bahagia",       directive: "happy, cheerful, joyful, bright and upbeat feeling, major key" },
+            sedih:      { label: "Sedih / Pilu",           directive: "sad, sorrowful, heartbroken, melancholic feeling, slow tempo, minor key" },
+            semangat:   { label: "Semangat / Membara",     directive: "energetic, fiery, motivational, powerful driving feeling, fast tempo" },
+            santai:     { label: "Santai / Tenang",        directive: "relaxed, calm, laid-back, peaceful and mellow feeling, slow easygoing tempo" },
+            romantis:   { label: "Romantis / Manis",       directive: "romantic, sweet, tender, warm and loving feeling" },
+            megah:      { label: "Megah / Epik",           directive: "epic, grand, cinematic, orchestral and powerful feeling, big buildup" },
+            misterius:  { label: "Misterius / Gelap",      directive: "mysterious, dark, tense, suspenseful feeling, minor key" },
+            nostalgia:  { label: "Nostalgia / Kenangan",   directive: "nostalgic, wistful, bittersweet, reflective feeling, retro tone" },
+            harapan:    { label: "Penuh Harapan",          directive: "hopeful, inspiring, uplifting, optimistic feeling, gradually building energy" },
+            pesisir:    { label: "Santai Pantai / Tropis", directive: "tropical, beachy, breezy laid-back feeling, reggae-influenced chill groove" },
+            pesta:      { label: "Pesta / Meriah",         directive: "festive, funky, danceable, high energy party groove" },
+            marah:      { label: "Marah / Kecewa",         directive: "angry, frustrated, intense, aggressive feeling, powerful and raw" },
+            kesepian:   { label: "Kesepian / Hampa",       directive: "lonely, isolated, empty, quiet and somber feeling" }
+        };
+
+        function populateMoodSelect(selectId) {
+            const el = document.getElementById(selectId);
+            if (!el) return;
+            el.innerHTML = Object.keys(MOOD_DATA).map(key =>
+                `<option value="${key}">${MOOD_DATA[key].label}</option>`
+            ).join('');
+        }
         window.lastLyricContent = "";
         window.currentAudioUrl = "";
         window.currentAudioTitle = "";
@@ -712,7 +753,7 @@
 
         let appState = {
             activeTab: 'lyric',
-            selectedMood: 'Melankolis',
+            selectedMood: 'sedih',
             activeMusicProvider: 'Apiframe.ai',
             autoSwitchOnOutOfCredits: true,
             providers: {
@@ -810,19 +851,19 @@
                 lyricTab?.classList.remove('hidden');
                 musicTab?.classList.add('hidden');
                 
-                lyricBtn?.classList.add('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                lyricBtn?.classList.add('bg-gradient-to-r', 'from-violet-700', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/40', 'ring-1', 'ring-gold-500/30');
                 lyricBtn?.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
                 
-                musicBtn?.classList.remove('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                musicBtn?.classList.remove('bg-gradient-to-r', 'from-violet-700', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/40', 'ring-1', 'ring-gold-500/30');
                 musicBtn?.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
             } else {
                 lyricTab?.classList.add('hidden');
                 musicTab?.classList.remove('hidden');
 
-                musicBtn?.classList.add('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                musicBtn?.classList.add('bg-gradient-to-r', 'from-violet-700', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/40', 'ring-1', 'ring-gold-500/30');
                 musicBtn?.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
 
-                lyricBtn?.classList.remove('bg-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/30');
+                lyricBtn?.classList.remove('bg-gradient-to-r', 'from-violet-700', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-violet-600/40', 'ring-1', 'ring-gold-500/30');
                 lyricBtn?.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-charcoal-800/60');
             }
         }
@@ -1116,12 +1157,17 @@
                 throw new Error("API Key OpenRouter belum diisi! Silakan buka Pengaturan API.");
             }
 
-            const systemInstructionText = `Kamu adalah penulis lirik lagu profesional. Tulis SELURUH lirik dalam bahasa ${lang}, gunakan gaya bahasa natural penutur asli daerah tersebut, jangan campur bahasa lain kecuali memang lazim dicampur dalam bahasa itu. 
-Gaya genre: ${genre}, Suasana/Mood: ${mood}.
+            const moodInfo = MOOD_DATA[mood] || MOOD_DATA['ceria'];
+            const moodLabel = moodInfo.label;
+            const moodDirective = moodInfo.directive;
+
+            const systemInstructionText = `Kamu adalah penulis lirik lagu profesional. Tulis SELURUH lirik dalam bahasa ${lang}, gunakan gaya bahasa natural penutur asli daerah tersebut, jangan campur bahasa lain kecuali memang lazim dicampur dalam bahasa itu.
+Gaya genre: ${genre}.
+SUASANA/MOOD WAJIB: ${moodLabel} (${moodDirective}). Ini instruksi PALING PENTING -- pastikan pilihan kata, nada cerita, dan emosi SETIAP baris lirik benar-benar mencerminkan suasana "${moodLabel}" ini secara konsisten dari awal sampai akhir, JANGAN membuat lirik yang terdengar ceria/bahagia kecuali mood yang diminta memang "${moodLabel}" adalah ceria/bahagia.
 Instruksi tambahan: ${keywords || 'Buat lirik yang puitis, unik, dan kaya emosi.'}
 Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro] sesuai kaidah lagu modern. Hanya kembalikan teks lirik lagu.`;
 
-            const userPromptText = `Buatkan lirik lagu tentang: "${topic}" dalam ${lang}.`;
+            const userPromptText = `Buatkan lirik lagu dengan suasana/mood "${moodLabel}" tentang: "${topic}" dalam ${lang}.`;
 
             const modelsToTry = [
                 selectedModel || 'nvidia/nemotron-3-ultra-550b-a55b:free',
@@ -1489,7 +1535,11 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
 
             const title = titleInput?.value.trim() || 'Lagu AI ' + new Date().toLocaleTimeString('id-ID');
             const genre = genreSelect?.value || 'Pop / Modern Pop';
-            const mood = moodSelect?.value || 'Ceria / Happy / Upbeat';
+            const moodKey = moodSelect?.value || 'ceria';
+            const moodInfo = MOOD_DATA[moodKey] || MOOD_DATA['ceria'];
+            // Kirim label + directive Inggris yang deskriptif ke style prompt (bukan cuma key mentah
+            // seperti "sedih") supaya Suno benar-benar menangkap suasana yang diminta, bukan default ceria.
+            const mood = `${moodInfo.label} (${moodInfo.directive})`;
             const vocal = vocalSelect?.value ?? 'm';
             const modelVersion = modelSelect?.value || 'V5_5';
 
@@ -2141,6 +2191,9 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             }
 
             populateCountryDropdowns();
+            populateMoodSelect('lyricMood');
+            populateMoodSelect('musicMood');
+            document.getElementById('lyricMood').value = appState.selectedMood;
             renderMusicHistory();
             updateHeaderBadges();
 
