@@ -1402,11 +1402,33 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 whisper: 'whispery vocal, soft breathy voice, intimate whisper singing style'
             };
             const specialHint = specialVocalStyleHints[params.vocal] || null;
-            // PENTING: specialHint ditaruh SEGERA setelah genre (bukan di akhir) supaya kalaupun
-            // field style kena batas panjang dari Suno, instruksi vokal khusus ini tidak ikut terpotong.
-            const styleString = specialHint
-                ? `${params.genre}, ${specialHint}, ${params.mood}`
-                : `${params.genre}, ${params.mood}`;
+
+            // Basis style/genre: pakai teks dari kolom "Gaya Musik & Instrumentasi" kalau user
+            // mengisi/mengedit sendiri (mis. menambah "acoustic guitar"), fallback ke genre dropdown
+            // kalau kolom itu kosong. Sebelumnya kolom ini SELALU diabaikan -- apapun yang diketik
+            // user di sana tidak pernah benar-benar dikirim ke API musik.
+            const baseStyle = (params.styleTags || params.genre || '').trim();
+
+            // Batas aman panjang field "style" di API musik (Suno via Apiframe/Kie.ai) supaya genre
+            // & mood TIDAK PERNAH kepotong -- keduanya cuma dikirim lewat field ini, tidak ada jalur
+            // cadangan lain. specialHint (arahan vokal khusus) yang dipangkas duluan kalau kepanjangan,
+            // karena karakter vokal khusus sudah punya sinyal lebih kuat lewat penanda di lirik
+            // (lihat injectVocalSectionTags), jadi lebih aman dikurangi dibanding genre/mood.
+            const MAX_STYLE_LEN = 950;
+            function buildStyleString(genreStyle, moodStr, hint) {
+                const core = `${genreStyle}, ${moodStr}`;
+                if (!hint) return core.substring(0, MAX_STYLE_LEN);
+
+                const full = `${genreStyle}, ${hint}, ${moodStr}`;
+                if (full.length <= MAX_STYLE_LEN) return full;
+
+                if (core.length >= MAX_STYLE_LEN) return core.substring(0, MAX_STYLE_LEN);
+
+                const remaining = MAX_STYLE_LEN - core.length - 2; // 2 = ", " pemisah tambahan
+                const trimmedHint = hint.substring(0, Math.max(0, remaining)).trim();
+                return trimmedHint ? `${genreStyle}, ${trimmedHint}, ${moodStr}` : core;
+            }
+            const styleString = buildStyleString(baseStyle, params.mood, specialHint);
 
             // Untuk mode duet (baik dewasa maupun anak-anak), tandai LANGSUNG di teks lirik per
             // bagian ([Verse 1], [Chorus], dst) siapa yang bernyanyi di situ. Ini kunci utama supaya
@@ -1563,6 +1585,11 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
 
             const title = titleInput?.value.trim() || 'Lagu AI ' + new Date().toLocaleTimeString('id-ID');
             const genre = genreSelect?.value || 'Pop / Modern Pop';
+            // Ambil isi kolom "Gaya Musik & Instrumentasi" apa adanya -- ini yang jadi basis style
+            // dikirim ke API musik (lihat submitMusicTask), bukan genre dropdown mentah, supaya
+            // tambahan detail dari user (mis. "acoustic guitar") ikut mempengaruhi hasil.
+            const styleTagsInput = document.getElementById('musicStyle');
+            const styleTags = (styleTagsInput?.value || '').trim();
             const moodKey = moodSelect?.value || 'ceria';
             const moodInfo = MOOD_DATA[moodKey] || MOOD_DATA['ceria'];
             // Kirim label + directive Inggris yang deskriptif ke style prompt (bukan cuma key mentah
@@ -1595,7 +1622,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 let taskId;
                 try {
                     taskId = await submitMusicTask(activeProv, {
-                        title, lyrics: rawLyrics, genre, mood, vocal, modelVersion, isInstrumental
+                        title, lyrics: rawLyrics, genre, styleTags, mood, vocal, modelVersion, isInstrumental
                     });
                 } catch (firstErr) {
                     if (firstErr.message.includes('INSUFFICIENT_CREDITS') && appState.autoSwitchOnOutOfCredits) {
@@ -1610,7 +1637,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
 
                             if (progressStepText) progressStepText.textContent = `Dialihkan ke ${activeProv}...`;
                             taskId = await submitMusicTask(activeProv, {
-                                title, lyrics: rawLyrics, genre, mood, vocal, modelVersion, isInstrumental
+                                title, lyrics: rawLyrics, genre, styleTags, mood, vocal, modelVersion, isInstrumental
                             });
                         } else {
                             throw firstErr;
