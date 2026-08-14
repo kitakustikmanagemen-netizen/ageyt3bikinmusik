@@ -1394,7 +1394,7 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
                 duet: 'duet, male and female vocals, alternating verses between male and female singer',
                 child_m: 'child voice, young boy singer, children\'s choir style, innocent youthful male vocal',
                 child_f: 'child voice, young girl singer, children\'s choir style, innocent youthful female vocal',
-                duet_child: 'duet, two distinct child voices, one young boy singer and one young girl singer, alternating between them by section, children\'s choir style',
+                duet_child: 'duet, two contrasting child voices, boy treble voice (slightly huskier boyish child tone) and girl soprano voice (sweeter clearer girlish child tone), children\'s choir style, clearly distinct timbre between the two singers',
                 raspy: 'raspy vocal, husky voice, gritty smoky vocal texture',
                 opera: 'operatic vocal, classical opera singing style, powerful vibrato, trained opera singer',
                 falsetto: 'falsetto vocal, high-pitched airy voice, soft falsetto singing style',
@@ -1415,8 +1415,8 @@ Struktur wajib menyertakan tag [Verse 1], [Chorus], [Verse 2], [Bridge], [Outro]
             function injectVocalSectionTags(lyricsText, vocalType) {
                 if (vocalType !== 'duet' && vocalType !== 'duet_child') return lyricsText;
 
-                const voiceA = vocalType === 'duet_child' ? 'Boy Vocal' : 'Male Vocal';
-                const voiceB = vocalType === 'duet_child' ? 'Girl Vocal' : 'Female Vocal';
+                const voiceA = vocalType === 'duet_child' ? 'Boy Treble Vocal (huskier boyish child tone)' : 'Male Vocal';
+                const voiceB = vocalType === 'duet_child' ? 'Girl Soprano Vocal (sweeter girlish child tone)' : 'Female Vocal';
                 let sectionIndex = 0;
 
                 return lyricsText.replace(/\[([^\]]+)\]/g, (match, tagContent) => {
